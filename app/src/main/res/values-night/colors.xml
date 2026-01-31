@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ic_launcher_bg">#191716</color>
+    <color name="ic_launcher_hair">#1e8f57</color>
+    <color name="ic_launcher_smile">#e7a114</color>
+
+    <color name="boarding_plan">@color/blueberry_blue_night</color>
+    <color name="boarding_discover">@color/turmeric_night</color>
+    <color name="boarding_never_lose">@color/sweet_fig_night</color>
+
+    <color name="colorPrimary">@color/green_lifted</color>
+    <color name="colorPrimaryVariant">@color/green_500</color>
+    <color name="colorOnPrimary">@color/black_900</color>
+    <color name="colorSecondary">@color/orange_300</color>
+    <color name="colorSecondaryVariant">@color/orange_300</color>
+    <color name="colorOnSecondary">@color/black_900</color>
+    <color name="colorBackground">@color/black_900</color>
+    <color name="colorSurface">@color/black_800</color>
+    <color name="colorOnBackground">@color/grey_200</color>
+    <color name="colorOnSurface">@color/grey_200</color>
+    <color name="colorTextMuted">@color/grey_400</color>
+    <color name="colorContainer">@color/green_dark_bg</color>
+    <color name="colorOnContainer">@color/green_lifted</color>
+    <color name="colorDivider">@color/grey_800_translucent</color>
+
+    <color name="colorError">@color/red_lifted</color>
+    <color name="colorOnError">@color/black_900</color>
+    <color name="colorErrorContainer">@color/red_dark_bg</color>
+    <color name="colorOnErrorContainer">@color/red_lifted</color>
+    <color name="colorWarning">@color/yellow_lifted</color>
+    <color name="colorOnWarning">@color/black_900</color>
+    <color name="colorWarningContainer">@color/yellow_dark_bg</color>
+    <color name="colorOnWarningContainer">@color/yellow_lifted</color>
+</resources>
