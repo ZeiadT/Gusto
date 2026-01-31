@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Gusto</string>
+    <string name="slogan">Cook with Joy</string>
+
+    <string name="next">Next</string>
+    <string name="join_now">Join Now</string>
+
+    <string name="onboarding_title_plan">Plan your perfect week</string>
+    <string name="onboarding_desc_plan">Turn meal planning into a joy with personalized recipes.</string>
+
+    <string name="onboarding_title_discover">Discover New Cuisines</string>
+    <string name="onboarding_desc_discover">Swipe through thousands of gourmet recipes tailored to your taste.</string>
+
+    <string name="onboarding_title_save">Never Lose a Flavor</string>
+    <string name="onboarding_desc_save">Save your favorite recipes with a single tap and create custom collections.</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

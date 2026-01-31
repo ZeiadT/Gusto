@@ -1,0 +1,27 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Base.Theme.Gustozo" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="fontFamily">@font/montserrat</item>
+
+        <item name="colorPrimary">@color/green_lifted</item>
+        <item name="colorOnPrimary">@color/black_900</item>
+        <item name="colorPrimaryContainer">@color/green_dark_bg</item>
+        <item name="colorOnPrimaryContainer">@color/green_lifted</item>
+
+        <item name="colorSecondary">@color/orange_300</item>
+        <item name="colorOnSecondary">@color/black_900</item>
+        <item name="colorSecondaryContainer">@color/orange_300</item>
+        <item name="colorOnSecondaryContainer">@color/black_900</item>
+
+        <item name="android:colorBackground">@color/black_900</item>
+        <item name="colorSurface">@color/black_800</item>
+        <item name="colorOnSurface">@color/grey_200</item>
+        <item name="colorOnSurfaceVariant">@color/grey_400</item>
+        <item name="colorOutline">@color/grey_800_translucent</item>
+
+        <item name="android:statusBarColor">@color/black_900</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
+    <style name="Theme.Gustozo" parent="Base.Theme.Gustozo" />
+</resources>
