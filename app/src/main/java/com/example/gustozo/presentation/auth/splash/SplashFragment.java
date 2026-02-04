@@ -1,4 +1,4 @@
-package com.example.gustozo.presentation.auth.fragment;
+package com.example.gustozo.presentation.auth.splash;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -16,13 +16,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 
 import com.example.gustozo.R;
-import com.example.gustozo.presentation.auth.contract.SplashContract;
-import com.example.gustozo.presentation.auth.presenter.SplashPresenter;
+import com.example.gustozo.presentation.auth.boarding.BoardingFragment;
+import com.example.gustozo.presentation.auth.login.LoginFragment;
 import com.example.gustozo.presentation.common.component.PolygonView;
 import com.example.gustozo.presentation.common.util.AnimationUtil;
-import com.google.android.material.snackbar.Snackbar;
-
-import java.util.Objects;
 
 public class SplashFragment extends Fragment implements SplashContract.View {
     private PolygonView overlayView;

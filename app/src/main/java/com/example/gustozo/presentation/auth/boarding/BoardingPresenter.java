@@ -1,8 +1,8 @@
-package com.example.gustozo.presentation.auth.presenter;
+package com.example.gustozo.presentation.auth.boarding;
 
 import com.example.gustozo.R;
 import com.example.gustozo.data.model.BoardingItem;
-import com.example.gustozo.presentation.auth.contract.BoardingContract;
+
 import java.util.ArrayList;
 import java.util.List;
 

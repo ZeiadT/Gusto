@@ -1,7 +1,6 @@
-package com.example.gustozo.presentation.auth.presenter;
+package com.example.gustozo.presentation.auth.splash;
 
 import com.example.gustozo.data.repo.SettingsRepository;
-import com.example.gustozo.presentation.auth.contract.SplashContract;
 
 public class SplashPresenter implements SplashContract.Presenter {
     private final SplashContract.View view;

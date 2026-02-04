@@ -9,7 +9,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/frag_container_auth"
-        android:name="com.example.gustozo.presentation.auth.fragment.SplashFragment"
+        android:name="com.example.gustozo.presentation.auth.splash.SplashFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"

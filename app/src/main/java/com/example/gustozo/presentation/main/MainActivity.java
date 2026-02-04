@@ -20,6 +20,10 @@ public class MainActivity extends AppCompatActivity {
 
 /*
 * refactor animation --Done
+* refactor splash / boarding --Done
+* create login UI --Done
+*
+* create register UI
 *
 * navigation animation from splash to main
 * navigate using navGraph

@@ -68,7 +68,6 @@
                 app:active_width="24dp"
 
                 app:common_height="8dp"
-                app:count="3"
                 app:dot_margin="4dp"
                 app:inactive_color="@color/green_500_faded"
                 app:inactive_width="8dp"

@@ -1,4 +1,4 @@
-package com.example.gustozo.presentation.auth.fragment;
+package com.example.gustozo.presentation.auth.boarding;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,8 +17,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.example.gustozo.R;
 import com.example.gustozo.data.model.BoardingItem;
-import com.example.gustozo.presentation.auth.contract.BoardingContract;
-import com.example.gustozo.presentation.auth.presenter.BoardingPresenter;
+import com.example.gustozo.presentation.auth.login.LoginFragment;
 import com.example.gustozo.presentation.common.component.WormDotIndicator;
 import com.example.gustozo.presentation.common.util.AnimationUtil;
 

@@ -1,4 +1,4 @@
-package com.example.gustozo.presentation.auth.contract;
+package com.example.gustozo.presentation.auth.splash;
 
 import android.content.Context;
 

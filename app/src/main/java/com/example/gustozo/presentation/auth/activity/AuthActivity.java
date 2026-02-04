@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.gustozo.R;
-import com.example.gustozo.presentation.auth.fragment.SplashFragment;
+import com.example.gustozo.presentation.auth.splash.SplashFragment;
 import com.example.gustozo.presentation.common.component.PolygonView;
 
 public class AuthActivity extends AppCompatActivity {

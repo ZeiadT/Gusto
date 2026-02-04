@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBackground"
-    tools:context=".presentation.auth.fragment.LoginFragment">
+    tools:context=".presentation.auth.login.LoginFragment">
 
 
     <com.example.gustozo.presentation.common.component.ShaderGradientView
@@ -131,12 +131,140 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
+    <CheckBox
+        android:id="@+id/cb_remember_me"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/passwordTextLayout" />
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/remember_me"
+        android:textColor="@color/colorTextMuted"
+        app:fontFamily="@font/montserrat_semibold"
+        app:layout_constraintBottom_toBottomOf="@+id/cb_remember_me"
+        app:layout_constraintStart_toEndOf="@+id/cb_remember_me"
+        app:layout_constraintTop_toTopOf="@+id/cb_remember_me" />
+
+    <TextView
+        android:id="@+id/btn_forget_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="@string/forgot_password"
+        android:textColor="@color/colorPrimary"
+        app:fontFamily="@font/montserrat_semibold"
+        app:layout_constraintBottom_toBottomOf="@+id/cb_remember_me"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/cb_remember_me" />
+
+    <include
+        android:id="@+id/btn_login"
+        layout="@layout/btn_primary_loadable"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/textView6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/materialDivider2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView6"
+        app:layout_constraintTop_toTopOf="@+id/textView6" />
+
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="@string/or"
+        android:textColor="@color/colorTextMuted"
+        app:fontFamily="@font/montserrat_semibold"
+        app:layout_constraintBottom_toTopOf="@+id/btn_google"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/materialDivider"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/textView6"
+        app:layout_constraintEnd_toStartOf="@+id/textView6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/textView6" />
+
+    <com.example.gustozo.presentation.common.component.SecondaryIconButton
+        android:id="@+id/btn_google"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/btn_guest"
+        app:layout_constraintEnd_toEndOf="@+id/materialDivider"
+        app:layout_constraintStart_toStartOf="@+id/materialDivider"
+        app:sb_backgroundColor="@color/colorSurface"
+        app:sb_cornerRadius="12dp"
+        app:sb_icon="@drawable/google_icon"
+        app:sb_strokeColor="@color/colorSecondary"
+        app:sb_strokeWidth="1dp"
+        app:sb_text="@string/google"
+        app:sb_textColor="@color/colorOnSurface" />
+
+    <com.example.gustozo.presentation.common.component.SecondaryIconButton
+        android:id="@+id/btn_facebook"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/btn_guest"
+        app:layout_constraintEnd_toEndOf="@+id/materialDivider2"
+        app:layout_constraintStart_toStartOf="@+id/materialDivider2"
+        app:sb_backgroundColor="@color/colorSurface"
+        app:sb_cornerRadius="12dp"
+        app:sb_icon="@drawable/facebook_icon"
+        app:sb_strokeColor="@color/colorSecondary"
+        app:sb_strokeWidth="1dp"
+        app:sb_text="@string/soon"
+        app:sb_textColor="@color/colorTextMuted" />
+
+    <TextView
+        android:id="@+id/btn_guest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:text="@string/join_as_guest"
+        android:textColor="@color/colorSecondary"
+        app:fontFamily="@font/montserrat_light"
+        app:layout_constraintBottom_toTopOf="@+id/textView5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <TextView
         android:id="@+id/textView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
         android:layout_marginEnd="4dp"
+        android:layout_marginBottom="32dp"
         android:text="@string/dont_have_an_account"
         android:textColor="@color/colorOnBackground"
         app:fontFamily="@font/montserrat_semibold"
@@ -161,36 +289,5 @@
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toEndOf="@+id/textView5" />
 
-    <CheckBox
-        android:id="@+id/cb_remember_me"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/passwordTextLayout" />
-
-    <TextView
-        android:id="@+id/textView7"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Remember me"
-        android:textColor="@color/colorTextMuted"
-        app:fontFamily="@font/montserrat_semibold"
-        app:layout_constraintBottom_toBottomOf="@+id/cb_remember_me"
-        app:layout_constraintStart_toEndOf="@+id/cb_remember_me"
-        app:layout_constraintTop_toTopOf="@+id/cb_remember_me" />
-
-    <TextView
-        android:id="@+id/btn_forget_password"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:text="Forgot Password?"
-        android:textColor="@color/colorPrimary"
-        app:fontFamily="@font/montserrat_semibold"
-        app:layout_constraintBottom_toBottomOf="@+id/cb_remember_me"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/cb_remember_me" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -17,4 +17,12 @@
     <string name="gusto_example_com">gusto@example.com</string>
     <string name="sign_in">SignIn</string>
     <string name="dont_have_an_account">Don\'t have an account?</string>
+    <string name="login">Login</string>
+    <string name="please_wait">Please Wait…</string>
+    <string name="or">Or</string>
+    <string name="remember_me">Remember me</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="join_as_guest">join as guest</string>
+    <string name="soon">Soon…</string>
+    <string name="google">Google</string>
 </resources>

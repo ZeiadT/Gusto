@@ -1,5 +1,6 @@
 [versions]
 agp = "9.0.0"
+google-services = "4.4.4"
 junit = "4.13.2"
 junitVersion = "1.1.5"
 espressoCore = "3.5.1"
@@ -9,13 +10,18 @@ activity = "1.8.0"
 constraintlayout = "2.1.4"
 recyclerview = "1.4.0"
 fragment = "1.8.9"
+cardview = "1.0.0"
 
 retrofit = "3.0.0"
 gson = "2.13.2"
 room = "2.8.4"
 preference = "1.2.1"
 glide = "4.16.0"
+rx-java = "3.1.5"
+rx-android = "3.0.2"
 
+google-auth = "20.7.0"
+firebase-bom = "34.8.0"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -36,9 +42,21 @@ room-compiler = { group = "androidx.room", name = "room-compiler", version.ref =
 androidx-preference = { group = "androidx.preference", name = "preference", version.ref = "preference" }
 glide-core = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 glide-compiler = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "glide" }
+androidx-cardview = { group = "androidx.cardview", name = "cardview", version.ref = "cardview" }
+
+rx-java = {group = "io.reactivex.rxjava3", name = "rxjava", version.ref = "rx-java"}
+rx-android = {group = "io.reactivex.rxjava3", name = "rxandroid", version.ref = "rx-android"}
+
+google-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "google-auth" }
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics"}
+firebase-auth = { group = "com.google.firebase", name = "firebase-auth"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
+google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
 
 [bundles]
 networking = ["retrofit-core", "retrofit-converter-gson", "google-gson"]
+firebase = ["firebase-analytics", "firebase-auth"]
+rx-java = ["rx-java", "rx-android"]
