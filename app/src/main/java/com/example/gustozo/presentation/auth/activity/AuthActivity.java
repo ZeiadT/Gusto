@@ -1,16 +1,15 @@
-package com.example.gustozo.controller;
+package com.example.gustozo.presentation.auth.activity;
 
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
-import androidx.activity.SystemBarStyle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.gustozo.R;
-import com.example.gustozo.view.PolygonView;
+import com.example.gustozo.presentation.auth.fragment.SplashFragment;
+import com.example.gustozo.presentation.common.component.PolygonView;
 
 public class AuthActivity extends AppCompatActivity {
 
@@ -29,13 +28,14 @@ public class AuthActivity extends AppCompatActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment currentFragment = fragmentManager.findFragmentById(R.id.frag_container_auth);
 
-        if (!(currentFragment instanceof SplashFragment)) {
-            PolygonView overlayView = findViewById(R.id.overlayView);
+        PolygonView overlayView = findViewById(R.id.overlayView);
 
-            if (overlayView.getParent() instanceof android.view.ViewGroup) {
-                ((android.view.ViewGroup) overlayView.getParent()).removeView(overlayView);
-            }
+        if ((currentFragment instanceof SplashFragment) || overlayView == null) return;
 
+        if (overlayView.getParent() instanceof android.view.ViewGroup) {
+            ((android.view.ViewGroup) overlayView.getParent()).removeView(overlayView);
         }
+
+
     }
 }

@@ -58,7 +58,7 @@
             android:layout_height="match_parent">
 
 
-            <com.example.gustozo.view.WormDotIndicator
+            <com.example.gustozo.presentation.common.component.WormDotIndicator
                 android:id="@+id/dots_indicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

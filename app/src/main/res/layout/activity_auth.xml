@@ -5,11 +5,11 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".controller.AuthActivity">
+    tools:context=".presentation.auth.activity.AuthActivity">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/frag_container_auth"
-        android:name="com.example.gustozo.controller.SplashFragment"
+        android:name="com.example.gustozo.presentation.auth.fragment.SplashFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -17,7 +17,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.example.gustozo.view.PolygonView
+    <com.example.gustozo.presentation.common.component.PolygonView
         android:id="@+id/overlayView"
         android:layout_width="match_parent"
         android:layout_height="0dp"

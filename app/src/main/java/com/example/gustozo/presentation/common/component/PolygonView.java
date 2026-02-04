@@ -1,4 +1,4 @@
-package com.example.gustozo.view;
+package com.example.gustozo.presentation.common.component;
 
 import android.content.Context;
 import android.content.res.TypedArray;

@@ -1,4 +1,4 @@
-package com.example.gustozo.controller;
+package com.example.gustozo.presentation.main;
 
 import android.os.Bundle;
 
@@ -17,14 +17,13 @@ public class MainActivity extends AppCompatActivity {
     }
 }
 
+
 /*
-* Required Dependencies:
+* refactor animation --Done
 *
-* AppStorage (sharedPrefs variant)
-* Room
-* Retrofit
-* Glide
-* Gson
-* GsonConverter
+* navigation animation from splash to main
+* navigate using navGraph
+*
+*
 *
 * */

@@ -1,0 +1,37 @@
+package com.example.gustozo.presentation.auth.presenter;
+
+import com.example.gustozo.data.repo.SettingsRepository;
+import com.example.gustozo.presentation.auth.contract.SplashContract;
+
+public class SplashPresenter implements SplashContract.Presenter {
+    private final SplashContract.View view;
+    private final SettingsRepository settingsRepo;
+    public SplashPresenter(SplashContract.View view) {
+        this.view = view;
+        this.settingsRepo =  SettingsRepository.getInstance(view.getAppContext());
+    }
+
+    @Override
+    public void onViewStarted() {
+        view.showInitialAnimations();
+        view.startOverlayAnimation();
+    }
+
+    @Override
+    public void onNavigationAnimationFinished() {
+
+        boolean shouldSkipBoarding = settingsRepo.shouldSkipBoarding();
+
+        if (!shouldSkipBoarding) {
+            view.navigateToBoarding();
+            view.cleanupOverlay();
+            return;
+        }
+
+        //todo if logged in go to home else go to login
+        view.navigateToLogin();
+        view.cleanupOverlay();
+
+
+    }
+}

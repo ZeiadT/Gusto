@@ -1,4 +1,4 @@
-package com.example.gustozo.view;
+package com.example.gustozo.presentation.common.component;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -105,8 +105,8 @@ public class WormDotIndicator extends LinearLayout {
     }
 
     public void selectDot(int position, boolean animate) {
-        index = position;
         if (position < 0 || position >= getChildCount()) return;
+        index = position;
 
         if (animate) {
             ChangeBounds transition = new ChangeBounds();
