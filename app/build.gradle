@@ -4,13 +4,13 @@ plugins {
 }
 
 android {
-    namespace 'com.example.gustozo'
+    namespace 'iti.mad.gusto'
     compileSdk {
         version = release(36)
     }
 
     defaultConfig {
-        applicationId "com.example.gustozo"
+        applicationId "iti.mad.gusto"
         minSdk 24
         targetSdk 36
         versionCode 1

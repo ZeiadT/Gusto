@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Gustozo"
+rootProject.name = "Gusto"
 include ':app'

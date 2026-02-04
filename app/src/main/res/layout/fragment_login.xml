@@ -8,7 +8,7 @@
     tools:context=".presentation.auth.login.LoginFragment">
 
 
-    <com.example.gustozo.presentation.common.component.ShaderGradientView
+    <iti.mad.gusto.presentation.common.component.ShaderGradientView
         android:id="@+id/shaderGradientView"
         android:layout_width="match_parent"
         android:layout_height="200dp"
@@ -16,7 +16,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-    </com.example.gustozo.presentation.common.component.ShaderGradientView>
+    </iti.mad.gusto.presentation.common.component.ShaderGradientView>
 
     <TextView
         android:id="@+id/textView2"
@@ -211,7 +211,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/textView6" />
 
-    <com.example.gustozo.presentation.common.component.SecondaryIconButton
+    <iti.mad.gusto.presentation.common.component.SecondaryIconButton
         android:id="@+id/btn_google"
         android:layout_width="0dp"
         android:layout_height="56dp"
@@ -229,7 +229,7 @@
         app:sb_text="@string/google"
         app:sb_textColor="@color/colorOnSurface" />
 
-    <com.example.gustozo.presentation.common.component.SecondaryIconButton
+    <iti.mad.gusto.presentation.common.component.SecondaryIconButton
         android:id="@+id/btn_facebook"
         android:layout_width="0dp"
         android:layout_height="56dp"
