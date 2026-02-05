@@ -21,4 +21,30 @@ public class VibrationManager {
             v.vibrate(500);
         }
     }
+
+    public static void errorVibration(Context context){
+        Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+
+            Log.d(TAG, "vibrated using api >= 26");
+        } else {
+            Log.d(TAG, "vibrated using api < 26");
+            v.vibrate(500);
+        }
+    }
+
+    public static void successVibration(Context context){
+        Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            v.vibrate(VibrationEffect.createOneShot(300, VibrationEffect.DEFAULT_AMPLITUDE));
+
+            Log.d(TAG, "vibrated using api >= 26");
+        } else {
+            Log.d(TAG, "vibrated using api < 26");
+            v.vibrate(500);
+        }
+    }
 }

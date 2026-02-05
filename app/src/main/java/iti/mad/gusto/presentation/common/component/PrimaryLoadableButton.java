@@ -43,12 +43,12 @@ public class PrimaryLoadableButton {
         holderLayout.setEnabled(true);
     }
 
-    public void setFinishedWithVibration(Context context, int duration){
+    public void setFinishedWithVibration(Context context, Runnable vibrationCallback){
         progressBar.setVisibility(View.GONE);
         textView.setText(defaultText);
         holderLayout.setEnabled(true);
 
-        VibrationManager.vibrate(context, duration);
+        vibrationCallback.run();
     }
 
     public void setDefaultText(String text){
@@ -56,5 +56,9 @@ public class PrimaryLoadableButton {
     }
     public void setLoadingText(String text){
         this.loadingText = text;
+    }
+
+    public void setEnabled(boolean enabled){
+        holderLayout.setEnabled(enabled);
     }
 }

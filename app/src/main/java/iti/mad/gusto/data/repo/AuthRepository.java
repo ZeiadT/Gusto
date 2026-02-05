@@ -1,28 +1,47 @@
 package iti.mad.gusto.data.repo;
 
-import iti.mad.gusto.data.service.AuthFirebaseService;
+import android.content.Context;
+
+import iti.mad.gusto.data.source.AuthFirebaseDatasource;
+
 import com.google.firebase.auth.FirebaseUser;
 
 import io.reactivex.rxjava3.core.Single;
 
 public class AuthRepository {
-    private final AuthFirebaseService authFirebaseService;
+    private final AuthFirebaseDatasource authFirebaseDatasource;
 
-    private AuthRepository() {
-        authFirebaseService = AuthFirebaseService.getInstance();
+    private AuthRepository(Context applicationContext) {
+        authFirebaseDatasource = AuthFirebaseDatasource.getInstance(applicationContext);
     }
 
     private static AuthRepository instance;
 
-    public static AuthRepository getInstance() {
+    public static AuthRepository getInstance(Context applicationContext) {
         if (instance == null)
-            instance = new AuthRepository();
+            instance = new AuthRepository(applicationContext);
 
         return instance;
     }
 
     public Single<FirebaseUser> signInWithEmailAndPassword(String email, String password) {
-        return authFirebaseService.signInWithEmailAndPassword(email, password);
+        return authFirebaseDatasource.signInWithEmailAndPassword(email, password);
+    }
+
+    public Single<FirebaseUser> authenticateWithGoogle(String idToken) {
+        return authFirebaseDatasource.authenticateWithGoogle(idToken);
+    }
+
+    public Single<FirebaseUser> signInAnonymously() {
+        return authFirebaseDatasource.anonymousSignIn();
+    }
+
+    public FirebaseUser getCurrentUser() {
+        return authFirebaseDatasource.getCurrentUser();
+    }
+
+    public Single<Boolean> signOut() {
+        return authFirebaseDatasource.signOut();
     }
 
 }

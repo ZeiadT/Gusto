@@ -18,6 +18,17 @@
 
     </iti.mad.gusto.presentation.common.component.ShaderGradientView>
 
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:indicatorColor="@color/colorSecondary"
+        android:visibility="gone"
+
+        app:layout_constraintTop_toBottomOf="@+id/shaderGradientView" />
+
     <TextView
         android:id="@+id/textView2"
         android:layout_width="0dp"
@@ -269,18 +280,18 @@
         android:textColor="@color/colorOnBackground"
         app:fontFamily="@font/montserrat_semibold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btn_sign_in"
+        app:layout_constraintEnd_toStartOf="@+id/btn_sign_up"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/btn_sign_in"
+        android:id="@+id/btn_sign_up"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:layout_marginBottom="32dp"
-        android:text="@string/sign_in"
+        android:text="@string/sign_up"
         android:textColor="@color/colorPrimary"
         app:fontFamily="@font/montserrat_bold"
         app:layout_constraintBottom_toBottomOf="parent"

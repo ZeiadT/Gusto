@@ -1,4 +1,6 @@
 <resources>
+    <string name="default_web_client_id" translatable="false">723380654288-grvcai2ike01rmq6m3ctg7gvm0fmuaro.apps.googleusercontent.com</string>
+
     <string name="app_name">Gusto</string>
     <string name="slogan">Cook with Joy</string>
     <string name="next">Next</string>
@@ -16,6 +18,7 @@
     <string name="enter_your_password">Enter your password</string>
     <string name="gusto_example_com">gusto@example.com</string>
     <string name="sign_in">SignIn</string>
+    <string name="sign_up">SignUp</string>
     <string name="dont_have_an_account">Don\'t have an account?</string>
     <string name="login">Login</string>
     <string name="please_wait">Please Wait…</string>
@@ -25,4 +28,10 @@
     <string name="join_as_guest">join as guest</string>
     <string name="soon">Soon…</string>
     <string name="google">Google</string>
+    <string name="error">Error</string>
+    <string name="success">Success</string>
+    <string name="warning">Warning</string>
+    <string name="info">Info</string>
+    <string name="invalid_email">Invalid Email, valid template: gusto@example.com</string>
+    <string name="invalid_password">Password must be at least 6 characters, including a letter and a number and a special character.</string>
 </resources>

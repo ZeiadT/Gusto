@@ -42,15 +42,16 @@ dependencies {
     implementation libs.constraintlayout
     implementation libs.recyclerview
     implementation libs.fragment
+    implementation libs.motiontoast
 
     implementation libs.room.runtime
     implementation libs.androidx.preference
     implementation libs.glide.core
     implementation libs.androidx.cardview
-    implementation libs.google.auth
-    implementation libs.bundles.firebase
     implementation libs.bundles.rx.java
     implementation libs.bundles.networking
+    implementation libs.bundles.firebase
+    implementation libs.bundles.google.auth
 
     implementation platform(libs.firebase.bom)
 
