@@ -146,4 +146,9 @@ public class SplashFragment extends Fragment implements SplashContract.View {
     public Context getAppContext() {
         return requireContext().getApplicationContext();
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
 }

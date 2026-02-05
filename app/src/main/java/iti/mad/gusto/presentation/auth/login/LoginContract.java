@@ -11,8 +11,8 @@ public interface LoginContract {
         void signInAnonymously();
 
         void onDetach();
-
     }
+
     interface View{
         void disableButtons();
         void enableButtons();

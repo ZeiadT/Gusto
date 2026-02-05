@@ -8,7 +8,7 @@ import java.util.List;
 
 public class BoardingPresenter implements BoardingContract.Presenter {
 
-    private final BoardingContract.View view;
+    private BoardingContract.View view;
     private final List<BoardingItem> items = new ArrayList<>();
     private int currentPosition = 0;
 
@@ -60,6 +60,11 @@ public class BoardingPresenter implements BoardingContract.Presenter {
     @Override
     public int getCount() {
         return items.size();
+    }
+
+    @Override
+    public void onDetach() {
+        view = null;
     }
 
     private void updateView(boolean animate, boolean movingForward) {

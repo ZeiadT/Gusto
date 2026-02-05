@@ -16,5 +16,6 @@ public interface SplashContract {
     interface Presenter {
         void onViewStarted();
         void onNavigationAnimationFinished();
+
     }
 }

@@ -122,4 +122,10 @@ public class BoardingFragment extends Fragment implements BoardingContract.View 
             outState.putInt(POSITION_KEY, presenter.getCurrentPosition());
         }
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.onDetach();
+    }
 }

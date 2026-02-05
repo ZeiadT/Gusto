@@ -49,6 +49,27 @@ public class AuthFirebaseDatasource {
         return instance;
     }
 
+    public Single<FirebaseUser> createUserWithEmailAndPassword(String email, String password) {
+
+        return Single.<FirebaseUser>create(
+                        emitter -> {
+                            mAuth.createUserWithEmailAndPassword(email, password)
+                                    .addOnCompleteListener(task -> {
+                                        if (task.isSuccessful()) {
+                                            Log.d(TAG, "signInWithEmailAndPassword:success");
+                                            FirebaseUser user = getCurrentUser();
+                                            emitter.onSuccess(user);
+                                        } else {
+                                            Log.w(TAG, "signInWithEmailAndPassword:failure", task.getException());
+                                            emitter.onError(task.getException());
+                                        }
+                                    });
+
+                        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
     public Single<FirebaseUser> signInWithEmailAndPassword(String email, String password) {
 
         return Single.<FirebaseUser>create(

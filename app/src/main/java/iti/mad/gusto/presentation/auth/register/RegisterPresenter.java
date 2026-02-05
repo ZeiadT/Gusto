@@ -1,4 +1,4 @@
-package iti.mad.gusto.presentation.auth.login;
+package iti.mad.gusto.presentation.auth.register;
 
 import static com.google.android.libraries.identity.googleid.GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL;
 
@@ -10,6 +10,8 @@ import androidx.credentials.CustomCredential;
 
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
 
+import java.util.Objects;
+
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import iti.mad.gusto.R;
@@ -18,25 +20,26 @@ import iti.mad.gusto.data.repo.AuthRepository;
 import iti.mad.gusto.data.repo.SettingsRepository;
 import iti.mad.gusto.presentation.common.util.ValidationUtil;
 
-public class LoginPresenter implements LoginContract.Presenter {
-    private LoginContract.View view;
-    private final AuthRepository authRepository;
-    private final SettingsRepository settingsRepository;
-    private final CompositeDisposable disposables;
+public class RegisterPresenter implements RegisterContract.Presenter {
+    AuthRepository authRepository;
+    SettingsRepository settingsRepository;
+    RegisterContract.View view;
     private final Context context;
+    private final CompositeDisposable disposables;
 
-    public LoginPresenter(Context applicationContext, LoginContract.View view) {
-        this.context = applicationContext.getApplicationContext();
+    public RegisterPresenter(RegisterContract.View view, Context context) {
+        disposables = new CompositeDisposable();
         this.view = view;
-        this.authRepository = AuthRepository.getInstance(context);
-        this.settingsRepository = SettingsRepository.getInstance(context);
-        this.disposables = new CompositeDisposable();
+        this.context = context;
+        authRepository = AuthRepository.getInstance(context.getApplicationContext());
+        settingsRepository = SettingsRepository.getInstance(context.getApplicationContext());
     }
 
+
     @Override
-    public void signInWithEmailAndPassword(String email, String password, boolean rememberMe) {
+    public void registerWithEmailAndPassword(String email, String password, String confirmPassword) {
         view.disableButtons();
-        view.setLoginButtonLoading();
+        view.setRegisterButtonLoading();
 
         boolean isValidEmail = ValidationUtil.isValidEmail(email);
         boolean isValidPassword = ValidationUtil.isValidPassword(password);
@@ -44,37 +47,43 @@ public class LoginPresenter implements LoginContract.Presenter {
         if (!isValidEmail) {
             view.showError(context.getString(R.string.invalid_email));
             view.enableButtons();
-            view.setLoginButtonIdle();
+            view.setRegisterButtonIdle();
             return;
         }
         if (!isValidPassword) {
             view.showError(context.getString(R.string.invalid_password));
             view.enableButtons();
-            view.setLoginButtonIdle();
+            view.setRegisterButtonIdle();
             return;
         }
-
+        if (!Objects.equals(password, confirmPassword)) {
+            view.showError(context.getString(R.string.passwords_mismatch));
+            view.enableButtons();
+            view.setRegisterButtonIdle();
+            return;
+        }
 
         Disposable d = authRepository.signInWithEmailAndPassword(email, password)
                 .subscribe(
                         (user) -> {
                             view.enableButtons();
-                            view.setLoginButtonIdleWithVibration(() -> VibrationManager.successVibration(context));
-                            settingsRepository.setRememberMe(rememberMe);
+                            view.setRegisterButtonIdleWithVibration(() -> VibrationManager.successVibration(context));
+                            settingsRepository.setRememberMe(true);
                             view.navigateHome();
                         },
                         (t) -> {
                             view.showError(t.getMessage());
                             view.enableButtons();
-                            view.setLoginButtonIdle();
+                            view.setRegisterButtonIdle();
                         }
                 );
 
         disposables.add(d);
+
     }
 
     @Override
-    public void signInWithGoogle(Credential credential) {
+    public void registerWithGoogle(Credential credential) {
         view.disableButtons();
 
         if (credential instanceof CustomCredential && credential.getType().equals(TYPE_GOOGLE_ID_TOKEN_CREDENTIAL)) {
@@ -124,6 +133,7 @@ public class LoginPresenter implements LoginContract.Presenter {
                 );
 
         disposables.add(d);
+
     }
 
     @Override
@@ -131,5 +141,4 @@ public class LoginPresenter implements LoginContract.Presenter {
         disposables.dispose();
         view = null;
     }
-
 }

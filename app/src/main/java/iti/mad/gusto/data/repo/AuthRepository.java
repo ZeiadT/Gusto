@@ -24,6 +24,9 @@ public class AuthRepository {
         return instance;
     }
 
+    public Single<FirebaseUser> createUserWithEmailAndPassword(String email, String password) {
+        return authFirebaseDatasource.createUserWithEmailAndPassword(email, password);
+    }
     public Single<FirebaseUser> signInWithEmailAndPassword(String email, String password) {
         return authFirebaseDatasource.signInWithEmailAndPassword(email, password);
     }

@@ -19,5 +19,6 @@ public interface BoardingContract {
         void onSkipClicked();
         int getCurrentPosition();
         int getCount();
+        void onDetach();
     }
 }

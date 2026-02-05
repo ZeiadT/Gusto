@@ -21,6 +21,7 @@
     <string name="sign_up">SignUp</string>
     <string name="dont_have_an_account">Don\'t have an account?</string>
     <string name="login">Login</string>
+    <string name="register">Register</string>
     <string name="please_wait">Please Wait…</string>
     <string name="or">Or</string>
     <string name="remember_me">Remember me</string>
@@ -34,4 +35,9 @@
     <string name="info">Info</string>
     <string name="invalid_email">Invalid Email, valid template: gusto@example.com</string>
     <string name="invalid_password">Password must be at least 6 characters, including a letter and a number and a special character.</string>
+    <string name="passwords_mismatch">Password and Confirm Password must be the same</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="start_your_culinary_journey">Start your culinary journey</string>
+    <string name="join_gusto">Join Gusto</string>
 </resources>

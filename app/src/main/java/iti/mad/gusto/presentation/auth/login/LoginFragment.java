@@ -1,8 +1,5 @@
 package iti.mad.gusto.presentation.auth.login;
 
-import static iti.mad.gusto.presentation.common.util.IconToastKt.errorToast;
-import static iti.mad.gusto.presentation.common.util.IconToastKt.errorToastDark;
-
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,6 +11,7 @@ import androidx.credentials.GetCredentialRequest;
 import androidx.credentials.GetCredentialResponse;
 import androidx.credentials.exceptions.GetCredentialException;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.os.CancellationSignal;
 import android.util.Log;
@@ -24,9 +22,9 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import iti.mad.gusto.R;
+import iti.mad.gusto.presentation.auth.register.RegisterFragment;
 import iti.mad.gusto.presentation.common.component.PrimaryLoadableButton;
 import iti.mad.gusto.presentation.common.component.SecondaryIconButton;
-import iti.mad.gusto.presentation.common.util.ThemeAwareIconToast;
 import iti.mad.gusto.presentation.common.util.ThemeAwareIconToastWithVibration;
 
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
@@ -181,6 +179,22 @@ public class LoginFragment extends Fragment implements LoginContract.View {
 
     @Override
     public void navigateRegister() {
-        //todo navigate register
+        safelyNavigateFragment(new RegisterFragment());
+    }
+
+
+    private void safelyNavigateFragment(Fragment fragment) {
+        FragmentManager parentManager;
+        try {
+            parentManager = getParentFragmentManager();
+        } catch (IllegalStateException ex) {
+            return;
+        }
+
+        if (!parentManager.isDestroyed()) {
+            parentManager.beginTransaction()
+                    .replace(R.id.frag_container_auth, fragment)
+                    .commitNow();
+        }
     }
 }
