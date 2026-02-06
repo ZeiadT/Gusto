@@ -1,5 +1,6 @@
 package iti.mad.gusto.presentation.auth.register;
 
+import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,7 +12,8 @@ import androidx.credentials.GetCredentialRequest;
 import androidx.credentials.GetCredentialResponse;
 import androidx.credentials.exceptions.GetCredentialException;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.os.CancellationSignal;
 import android.util.Log;
@@ -26,10 +28,11 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.util.Objects;
 
 import iti.mad.gusto.R;
-import iti.mad.gusto.presentation.auth.login.LoginFragment;
+import iti.mad.gusto.presentation.auth.activity.AuthActivityCommunicator;
 import iti.mad.gusto.presentation.common.component.PrimaryLoadableButton;
 import iti.mad.gusto.presentation.common.component.SecondaryIconButton;
 import iti.mad.gusto.presentation.common.util.ThemeAwareIconToastWithVibration;
+import iti.mad.gusto.presentation.main.activity.MainActivity;
 
 public class RegisterFragment extends Fragment implements RegisterContract.View {
     private TextInputEditText etEmail;
@@ -41,6 +44,8 @@ public class RegisterFragment extends Fragment implements RegisterContract.View 
     private TextView btnGuest;
     private TextView btnSignIn;
     private RegisterPresenter presenter;
+    private NavController navController;
+    private AuthActivityCommunicator communicator;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,7 +55,10 @@ public class RegisterFragment extends Fragment implements RegisterContract.View 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_register, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_register, container, false);
+        navController = NavHostFragment.findNavController(this);
+        return view;
     }
 
     @Override
@@ -60,6 +68,9 @@ public class RegisterFragment extends Fragment implements RegisterContract.View 
         presenter = new RegisterPresenter(this, requireContext());
         setListeners();
 
+        Activity parentActivity = requireActivity();
+        if (parentActivity instanceof AuthActivityCommunicator)
+            communicator = (AuthActivityCommunicator) parentActivity;
     }
 
     private void initUI(View view) {
@@ -161,27 +172,13 @@ public class RegisterFragment extends Fragment implements RegisterContract.View 
 
     @Override
     public void navigateHome() {
-        //todo navigate home
+        communicator.navigateReplacementToAnotherActivityWithAnimation(MainActivity.class);
     }
 
     @Override
     public void navigateLogin() {
         Log.d("TAG", "navigateLogin: ");
-        safelyNavigateFragment(new LoginFragment());
+        navController.navigate(R.id.navigate_register_to_login);
     }
 
-    private void safelyNavigateFragment(Fragment fragment) {
-        FragmentManager parentManager;
-        try {
-            parentManager = getParentFragmentManager();
-        } catch (IllegalStateException ex) {
-            return;
-        }
-
-        if (!parentManager.isDestroyed()) {
-            parentManager.beginTransaction()
-                    .replace(R.id.frag_container_auth, fragment)
-                    .commitNow();
-        }
-    }
 }

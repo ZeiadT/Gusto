@@ -96,6 +96,7 @@ public class LoginPresenter implements LoginContract.Presenter {
                 .subscribe(
                         user -> {
                             view.enableButtons();
+                            settingsRepository.setRememberMe(true);
                             view.navigateHome();
                         },
                         throwable -> {
@@ -115,6 +116,7 @@ public class LoginPresenter implements LoginContract.Presenter {
                 .subscribe(
                         (user) -> {
                             view.enableButtons();
+                            settingsRepository.setRememberMe(true);
                             view.navigateHome();
                         },
                         (t) -> {

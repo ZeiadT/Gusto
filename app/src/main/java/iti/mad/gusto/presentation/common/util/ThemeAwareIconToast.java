@@ -15,9 +15,9 @@ import iti.mad.gusto.core.managers.VibrationManager;
 public class ThemeAwareIconToast {
     public static void info(Context context, String message) {
         if (isDarkMode(context)) {
-            informationToast(context, message);
-        } else {
             informationToastDark(context, message);
+        } else {
+            informationToast(context, message);
         }
     }
 

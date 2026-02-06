@@ -48,7 +48,7 @@ public class BoardingFragment extends Fragment implements BoardingContract.View 
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        presenter = new BoardingPresenter(this);
+        presenter = new BoardingPresenter(this, requireContext().getApplicationContext());
 
         initUI(view);
 

@@ -1,38 +1,46 @@
 package iti.mad.gusto.presentation.auth.splash;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 
 import iti.mad.gusto.R;
-import iti.mad.gusto.presentation.auth.boarding.BoardingFragment;
-import iti.mad.gusto.presentation.auth.login.LoginFragment;
+import iti.mad.gusto.presentation.auth.activity.AuthActivityCommunicator;
 import iti.mad.gusto.presentation.common.component.PolygonView;
 import iti.mad.gusto.presentation.common.util.AnimationUtil;
+import iti.mad.gusto.presentation.main.activity.MainActivity;
 
 public class SplashFragment extends Fragment implements SplashContract.View {
+    private NavController navController;
     private PolygonView overlayView;
     private ImageView imgLogo;
     private TextView tvAppName;
     private TextView tvSlogan;
     private int screenHeight;
     private SplashContract.Presenter presenter;
+    private AuthActivityCommunicator communicator;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_splash, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_splash, container, false);
+        navController = NavHostFragment.findNavController(this);
+        return view;
     }
 
     @Override
@@ -41,6 +49,11 @@ public class SplashFragment extends Fragment implements SplashContract.View {
         initUI(view);
         screenHeight = getResources().getDisplayMetrics().heightPixels;
         presenter = new SplashPresenter(this);
+
+        Activity parentActivity = requireActivity();
+        if (parentActivity instanceof AuthActivityCommunicator)
+            communicator = (AuthActivityCommunicator) parentActivity;
+
     }
 
 
@@ -94,17 +107,18 @@ public class SplashFragment extends Fragment implements SplashContract.View {
 
     @Override
     public void navigateToBoarding() {
-        safelyNavigateFragment(new BoardingFragment());
+        navController.navigate(R.id.navigate_splash_to_boarding);
     }
 
     @Override
     public void navigateToHome() {
-        // safelyNavigate(new HomeFragment());
+        if (communicator != null)
+            communicator.navigateReplacementToAnotherActivity(MainActivity.class);
     }
 
     @Override
     public void navigateToLogin() {
-        safelyNavigateFragment(new LoginFragment());
+        navController.navigate(R.id.navigate_splash_to_login);
     }
 
     @Override
@@ -116,7 +130,7 @@ public class SplashFragment extends Fragment implements SplashContract.View {
                 this::detachOverlay,
                 0,
                 600,
-                null
+                new AccelerateDecelerateInterpolator()
         );
     }
 
@@ -124,21 +138,6 @@ public class SplashFragment extends Fragment implements SplashContract.View {
     private void detachOverlay() {
         if (overlayView != null && overlayView.getParent() instanceof ViewGroup) {
             ((ViewGroup) overlayView.getParent()).removeView(overlayView);
-        }
-    }
-
-    private void safelyNavigateFragment(Fragment fragment) {
-        FragmentManager parentManager;
-        try {
-            parentManager = getParentFragmentManager();
-        } catch (IllegalStateException ex) {
-            return;
-        }
-
-        if (!parentManager.isDestroyed()) {
-            parentManager.beginTransaction()
-                    .replace(R.id.frag_container_auth, fragment)
-                    .commitNow();
         }
     }
 

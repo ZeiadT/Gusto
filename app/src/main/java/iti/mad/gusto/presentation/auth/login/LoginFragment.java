@@ -1,5 +1,6 @@
 package iti.mad.gusto.presentation.auth.login;
 
+import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,7 +12,8 @@ import androidx.credentials.GetCredentialRequest;
 import androidx.credentials.GetCredentialResponse;
 import androidx.credentials.exceptions.GetCredentialException;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.os.CancellationSignal;
 import android.util.Log;
@@ -22,10 +24,12 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import iti.mad.gusto.R;
-import iti.mad.gusto.presentation.auth.register.RegisterFragment;
+import iti.mad.gusto.presentation.auth.activity.AuthActivityCommunicator;
 import iti.mad.gusto.presentation.common.component.PrimaryLoadableButton;
 import iti.mad.gusto.presentation.common.component.SecondaryIconButton;
+import iti.mad.gusto.presentation.common.util.ThemeAwareIconToast;
 import iti.mad.gusto.presentation.common.util.ThemeAwareIconToastWithVibration;
+import iti.mad.gusto.presentation.main.activity.MainActivity;
 
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
 import com.google.android.material.textfield.TextInputEditText;
@@ -44,6 +48,8 @@ public class LoginFragment extends Fragment implements LoginContract.View {
     private TextView btnSignUp;
 
     private LoginPresenter presenter;
+    private AuthActivityCommunicator communicator;
+    private NavController navController;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,7 +59,10 @@ public class LoginFragment extends Fragment implements LoginContract.View {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_login, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_login, container, false);
+        navController = NavHostFragment.findNavController(this);
+        return view;
     }
 
     @Override
@@ -62,6 +71,10 @@ public class LoginFragment extends Fragment implements LoginContract.View {
         initUI(view);
         presenter = new LoginPresenter(requireActivity(), this);
         setListeners();
+
+        Activity parentActivity = requireActivity();
+        if (parentActivity instanceof AuthActivityCommunicator)
+            communicator = (AuthActivityCommunicator) parentActivity;
 
 
     }
@@ -98,6 +111,8 @@ public class LoginFragment extends Fragment implements LoginContract.View {
         btnGoogle.setOnClickListener((v) -> showGoogleAuthSheet());
         btnGuest.setOnClickListener((v) -> presenter.signInAnonymously());
         btnSignUp.setOnClickListener(v -> navigateRegister());
+        btnForgetPassword.setOnClickListener(v -> ThemeAwareIconToastWithVibration.info(requireContext(), getString(R.string.coming_soon)));
+
 
     }
 
@@ -174,27 +189,11 @@ public class LoginFragment extends Fragment implements LoginContract.View {
 
     @Override
     public void navigateHome() {
-        //todo navigate home
+        communicator.navigateReplacementToAnotherActivityWithAnimation(MainActivity.class);
     }
 
     @Override
     public void navigateRegister() {
-        safelyNavigateFragment(new RegisterFragment());
-    }
-
-
-    private void safelyNavigateFragment(Fragment fragment) {
-        FragmentManager parentManager;
-        try {
-            parentManager = getParentFragmentManager();
-        } catch (IllegalStateException ex) {
-            return;
-        }
-
-        if (!parentManager.isDestroyed()) {
-            parentManager.beginTransaction()
-                    .replace(R.id.frag_container_auth, fragment)
-                    .commitNow();
-        }
+        navController.navigate(R.id.navigate_login_to_register);
     }
 }

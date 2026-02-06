@@ -20,6 +20,7 @@ preference = "1.2.1"
 glide = "4.16.0"
 rx-java = "3.1.5"
 rx-android = "3.0.2"
+rx-ritrofit-adapter = "3.0.0"
 
 firebase-bom = "34.8.0"
 play-services-auth = "21.5.0"
@@ -27,6 +28,8 @@ play-services-auth = "21.5.0"
 credentials = "1.5.0"
 credentials-play-services-auth = "1.5.0"
 googleid = "1.2.0"
+navigationFragmentKtx = "2.9.7"
+navigationUiKtx = "2.9.7"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -52,6 +55,7 @@ androidx-cardview = { group = "androidx.cardview", name = "cardview", version.re
 
 rx-java = {group = "io.reactivex.rxjava3", name = "rxjava", version.ref = "rx-java"}
 rx-android = {group = "io.reactivex.rxjava3", name = "rxandroid", version.ref = "rx-android"}
+rx-ritrofit-adapter = {module = "com.squareup.retrofit2:adapter-rxjava3", version.ref = "rx-ritrofit-adapter" }
 
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics"}
@@ -62,6 +66,8 @@ credentials = { group = "androidx.credentials", name = "credentials", version.re
 credentials-play-services-auth = { group = "androidx.credentials", name = "credentials-play-services-auth", version.ref = "credentials-play-services-auth"}
 googleid = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleid"}
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "play-services-auth" }
+androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigationFragmentKtx" }
+androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigationUiKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -70,5 +76,5 @@ google-services = { id = "com.google.gms.google-services", version.ref = "google
 [bundles]
 networking = ["retrofit-core", "retrofit-converter-gson", "google-gson"]
 firebase = ["firebase-analytics", "firebase-auth", "firebase-firestore"]
-rx-java = ["rx-java", "rx-android"]
+rx-java = ["rx-java", "rx-android", "rx-ritrofit-adapter"]
 google-auth = ["credentials", "credentials-play-services-auth", "googleid", "play-services-auth"]

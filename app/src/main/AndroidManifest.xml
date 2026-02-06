@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="iti.mad.gusto"
-    >
+    package="iti.mad.gusto">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
@@ -29,8 +27,10 @@
         </activity>
 
         <activity
-            android:name=".presentation.main.MainActivity"
-            android:exported="false" />
+            android:name=".presentation.main.activity.MainActivity"
+            android:exported="false" >
+
+        </activity>
 
 
     </application>

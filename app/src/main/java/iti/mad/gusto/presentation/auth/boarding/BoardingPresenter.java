@@ -1,7 +1,10 @@
 package iti.mad.gusto.presentation.auth.boarding;
 
+import android.content.Context;
+
 import iti.mad.gusto.R;
 import iti.mad.gusto.data.model.BoardingItem;
+import iti.mad.gusto.data.repo.SettingsRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,10 +14,12 @@ public class BoardingPresenter implements BoardingContract.Presenter {
     private BoardingContract.View view;
     private final List<BoardingItem> items = new ArrayList<>();
     private int currentPosition = 0;
+    private final SettingsRepository settingsRepository;
 
-    public BoardingPresenter(BoardingContract.View view) {
+    public BoardingPresenter(BoardingContract.View view, Context context) {
         this.view = view;
         loadStaticData();
+        settingsRepository = SettingsRepository.getInstance(context);
     }
 
     private void loadStaticData() {
@@ -35,6 +40,7 @@ public class BoardingPresenter implements BoardingContract.Presenter {
             currentPosition++;
             updateView(true, true);
         } else {
+            settingsRepository.setSkipBoarding(true);
             view.navigateToLogin();
         }
     }
@@ -49,6 +55,7 @@ public class BoardingPresenter implements BoardingContract.Presenter {
 
     @Override
     public void onSkipClicked() {
+        settingsRepository.setSkipBoarding(true);
         view.navigateToLogin();
     }
 

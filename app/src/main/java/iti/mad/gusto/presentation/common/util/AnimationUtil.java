@@ -56,9 +56,7 @@ public class AnimationUtil {
     public static void animateTranslationY(View view, float translationY, Runnable onStart, Runnable onEnd, long startDelay, long duration, TimeInterpolator interpolator) {
         if (view == null) return;
         ViewPropertyAnimator animator = animate(view, onStart, onEnd, startDelay, duration, interpolator);
-        if (animator != null) {
-            animator.translationY(translationY).start();
-        }
+        animator.translationY(translationY).start();
     }
 
     /**

@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import iti.mad.gusto.R;
@@ -70,6 +71,7 @@ public class PolygonView extends View {
     }
 
     public float getGapOffsetPercentage() {
+        Log.d("TAG", "getGapOffsetPercentage: " + gapOffsetPercentage);
         return gapOffsetPercentage;
     }
 }
