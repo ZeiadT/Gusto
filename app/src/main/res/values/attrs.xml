@@ -30,4 +30,11 @@
         <attr name="sb_strokeColor" format="color" />
         <attr name="sb_strokeWidth" format="dimension" />
     </declare-styleable>
+
+    <declare-styleable name="FeaturedMealCard">
+        <attr name="mealTitle" format="string" />
+        <attr name="mealSubtitle" format="string" />
+        <attr name="mealImage" format="reference" />
+        <attr name="cardRadius" format="dimension" />
+    </declare-styleable>
 </resources>

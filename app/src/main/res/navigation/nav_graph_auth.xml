@@ -54,8 +54,8 @@
         <action
             android:id="@+id/navigate_register_to_login"
             app:destination="@id/loginFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
+            app:enterAnim="@anim/slide_right_to_center"
+            app:exitAnim="@anim/slide_center_to_left"
             app:popUpToInclusive="true"
             app:popUpTo="@id/registerFragment"/>
     </fragment>

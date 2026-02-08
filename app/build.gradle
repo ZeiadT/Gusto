@@ -43,6 +43,7 @@ dependencies {
     implementation libs.recyclerview
     implementation libs.fragment
     implementation libs.motiontoast
+    implementation libs.palette
 
     implementation libs.room.runtime
     implementation libs.androidx.preference

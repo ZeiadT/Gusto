@@ -47,7 +47,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         presenter.onViewCreated(savedInstanceState != null);
 
         bottomNavigationView.setOnItemSelectedListener(item ->
-                presenter.onBottomNavItemSelected(item.getItemId(), bottomNavigationView.getSelectedItemId())
+                presenter.onBottomNavItemSelected(item.getItemId(), getNavPositionFromId(item.getItemId())
+                        , bottomNavigationView.getSelectedItemId(), getNavPositionFromId(bottomNavigationView.getSelectedItemId()))
         );
     }
 
@@ -75,19 +76,32 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     }
 
     @Override
-    public void navigateToSection(int destinationId) {
-        // The View constructs the complex Android NavOptions
-        NavOptions navOptions = new NavOptions.Builder()
-                .setEnterAnim(R.anim.slide_in_right)
-                .setExitAnim(R.anim.slide_out_left)
-                .setPopEnterAnim(R.anim.slide_in_right)
-                .setPopExitAnim(R.anim.slide_out_left)
-                .setLaunchSingleTop(true)
-                .setRestoreState(true)
-                .setPopUpTo(R.id.discoverFragment, false, true)
-                .build();
+    public void navigateToSection(int destinationId, boolean isForward) {
+        int enterAnim;
+        int exitAnim;
 
-        navController.navigate(destinationId, null, navOptions);
+        if (isForward) {
+            enterAnim = R.anim.slide_right_to_center;
+            exitAnim = R.anim.slide_center_to_left;
+        } else {
+            enterAnim = R.anim.slide_left_to_center;
+            exitAnim = R.anim.slide_center_to_right;
+        }
+
+        NavOptions.Builder builder = new NavOptions.Builder()
+                .setEnterAnim(enterAnim)
+                .setExitAnim(exitAnim)
+                .setPopEnterAnim(R.anim.slide_left_to_center)
+                .setPopExitAnim(R.anim.slide_center_to_right)
+                .setLaunchSingleTop(true);
+
+        if (destinationId == R.id.discoverFragment) {
+            builder.setPopUpTo(R.id.discoverFragment, true);
+        } else {
+            builder.setPopUpTo(R.id.discoverFragment, false);
+        }
+
+        navController.navigate(destinationId, null, builder.build());
     }
 
     @Override
@@ -121,5 +135,15 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                 600,
                 new AccelerateDecelerateInterpolator()
         );
+    }
+
+    private int getNavPositionFromId(int id) {
+        Menu menu = bottomNavigationView.getMenu();
+        for (int i = 0; i < menu.size(); i++) {
+            if (menu.getItem(i).getItemId() == id) {
+                return i;
+            }
+        }
+        return -1;
     }
 }

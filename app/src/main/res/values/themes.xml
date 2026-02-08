@@ -31,5 +31,6 @@
     <style name="Theme.Gusto" parent="Base.Theme.Gusto" >
         <item name="cursorColor">@color/colorPrimary</item>
         <item name="cursorErrorColor">@color/colorError</item>
+        <item name="elevationOverlayEnabled">false</item>
     </style>
 </resources>

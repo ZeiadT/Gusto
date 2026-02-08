@@ -19,12 +19,12 @@ public class MainPresenter implements MainContract.Presenter {
     }
 
     @Override
-    public boolean onBottomNavItemSelected(int newItemId, int currentItemId) {
+    public boolean onBottomNavItemSelected(int newItemId, int newItemOrder, int currentItemId, int currentItemOrder) {
         if (newItemId == currentItemId) {
             return false;
         }
 
-        view.navigateToSection(newItemId);
+        view.navigateToSection(newItemId, newItemOrder > currentItemOrder);
         return true;
     }
 }

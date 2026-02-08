@@ -1,6 +1,6 @@
 package iti.mad.gusto.core.restclient;
 
-import iti.mad.gusto.data.service.MealsService;
+import iti.mad.gusto.data.service.MealService;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -14,7 +14,7 @@ public class RetrofitClient {
         return instance;
     }
 
-    private static final String baseUrl = "www.themealdb.com/api/json/v1/1/";
+    private static final String baseUrl = "https://www.themealdb.com/api/json/v1/1/";
     private final Retrofit retrofit;
 
     private RetrofitClient() {
@@ -26,7 +26,7 @@ public class RetrofitClient {
 
     }
 
-    public MealsService getMealsService(){
-        return retrofit.create(MealsService.class);
+    public MealService getMealsService(){
+        return retrofit.create(MealService.class);
     }
 }

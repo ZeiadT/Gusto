@@ -12,6 +12,7 @@ motiontoast = "1.4"
 recyclerview = "1.4.0"
 fragment = "1.8.9"
 cardview = "1.0.0"
+palette = "1.0.0"
 
 retrofit = "3.0.0"
 gson = "2.13.2"
@@ -42,6 +43,7 @@ constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayo
 motiontoast = { module = "com.github.Spikeysanju:MotionToast", version.ref = "motiontoast" }
 recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
 fragment = { group = "androidx.fragment", name = "fragment", version.ref = "fragment" }
+palette = {group = "androidx.palette", name = "palette", version.ref="palette"}
 
 retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
@@ -61,6 +63,7 @@ firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.r
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics"}
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth"}
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore"}
+
 
 credentials = { group = "androidx.credentials", name = "credentials", version.ref = "credentials"}
 credentials-play-services-auth = { group = "androidx.credentials", name = "credentials-play-services-auth", version.ref = "credentials-play-services-auth"}
