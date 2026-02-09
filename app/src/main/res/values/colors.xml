@@ -7,11 +7,15 @@
     <color name="green_50">#E8F5ED</color>
     <color name="green_500">#1E8F57</color>
     <color name="green_500_faded">#481E8F57</color>
+    <color name="green_500_20">#331E8F57</color>
+    <color name="green_500_10">#1A1E8F57</color>
     <color name="green_700">#14663E</color>
     <color name="green_lifted">#28B873</color>
     <color name="green_dark_bg">#173326</color>
     <color name="orange_500">#FF6B35</color>
     <color name="orange_500_faded">#1AFF6B35</color>
+    <color name="orange_500_20">#33FF6B35</color>
+    <color name="orange_500_10">#1AFF6B35</color>
     <color name="orange_300">#FF7D4D</color>
     <color name="white">#FFFFFF</color>
     <color name="grey_50">#F9F9F9</color>
@@ -38,6 +42,8 @@
     <color name="blueberry_blue_night">#5D8BB5</color>
     <color name="turmeric_night">#FFD54F</color>
     <color name="sweet_fig_night">#A569BD</color>
+
+    <color name="surface_40">#99ffffff</color>
 
 
     <color name="boarding_plan">@color/blueberry_blue</color>

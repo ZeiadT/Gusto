@@ -23,6 +23,8 @@
     <color name="colorOnContainer">@color/green_lifted</color>
     <color name="colorDivider">@color/grey_800_translucent</color>
 
+    <color name="surface_40">#99000000</color>
+
     <color name="colorError">@color/red_lifted</color>
     <color name="colorOnError">@color/black_900</color>
     <color name="colorErrorContainer">@color/red_dark_bg</color>

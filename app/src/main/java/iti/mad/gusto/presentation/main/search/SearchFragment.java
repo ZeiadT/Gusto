@@ -1,5 +1,6 @@
 package iti.mad.gusto.presentation.main.search;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -25,6 +26,7 @@ import java.util.Objects;
 import iti.mad.gusto.R;
 import iti.mad.gusto.domain.entity.MealEntity;
 import iti.mad.gusto.domain.entity.SearchTagEntity;
+import iti.mad.gusto.presentation.mealdetails.MealDetailsActivity;
 import iti.mad.gusto.ui.adapter.SearchTagAdapter;
 
 public class SearchFragment extends Fragment implements SearchContract.View {
@@ -129,7 +131,9 @@ public class SearchFragment extends Fragment implements SearchContract.View {
 
             @Override
             public void onMealClick(MealEntity meal) {
-
+                Intent intent = new Intent(requireContext(), MealDetailsActivity.class);
+                intent.putExtra("mealId", meal.getId());
+                startActivity(intent);
             }
 
             @Override

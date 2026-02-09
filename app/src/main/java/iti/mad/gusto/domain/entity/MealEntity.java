@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import java.util.List;
 
 public class MealEntity {
+    private String id;
     private String name;
     private String image;
     private String category;
@@ -12,6 +13,15 @@ public class MealEntity {
     private String youtube;
     private List<IngredientEntity> ingredients;
     private List<InstructionEntity> instructions;
+
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public void setName(String name) {
         this.name = name;

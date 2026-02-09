@@ -56,4 +56,6 @@
     <string name="add_tags_e_g_beef">Add tags (e.g. #Beef)</string>
     <string name="search_meals_e_g_pesto_pasta">Search Meals (e.g. Pesto Pasta)</string>
     <string name="clear">Clear</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="instructions">Instructions</string>
 </resources>

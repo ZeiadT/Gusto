@@ -1,5 +1,6 @@
 package iti.mad.gusto.presentation.main.discover;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -23,6 +24,7 @@ import iti.mad.gusto.domain.entity.CategoryEntity;
 import iti.mad.gusto.domain.entity.CountryEntity;
 import iti.mad.gusto.domain.entity.MealEntity;
 import iti.mad.gusto.presentation.common.component.FeaturedMealCard;
+import iti.mad.gusto.presentation.mealdetails.MealDetailsActivity;
 
 public class DiscoverFragment extends Fragment implements DiscoverContract.View{
     RecyclerView recyclerView;
@@ -63,7 +65,11 @@ public class DiscoverFragment extends Fragment implements DiscoverContract.View{
         super.onStart();
         presenter.onViewCreated();
         //todo add presenter logic for these click listeners
-        cardDailySpecial.setOnClickListener(v -> {});
+        cardDailySpecial.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), MealDetailsActivity.class);
+            intent.putExtra("mealId", cardDailySpecial.getMealId());
+            startActivity(intent);
+        });
         cardDailySpecial.setOnAddClickListener(v -> {});
         cardDailySpecial.setOnFavoriteClickListener(v -> {});
     }
@@ -77,12 +83,15 @@ public class DiscoverFragment extends Fragment implements DiscoverContract.View{
     @Override
     public void setFeaturedMeal(MealEntity meal) {
         cardDailySpecial.setMealData(meal.getName(), meal.getCategory(), meal.getImage());
+        cardDailySpecial.setMealId(meal.getId());
 
     }
 
     @Override
     public void setCategories(List<CategoryEntity> categories) {
-        adapter.setCategories(categories);
+        adapter.setCategories(categories, category -> {
+
+        });
     }
 
     @Override

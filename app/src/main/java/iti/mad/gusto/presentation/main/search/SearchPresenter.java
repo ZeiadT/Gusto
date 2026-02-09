@@ -1,7 +1,5 @@
 package iti.mad.gusto.presentation.main.search;
 
-import android.util.Log;
-
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -9,7 +7,6 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import iti.mad.gusto.data.repo.MealRepository;
-import iti.mad.gusto.domain.entity.MealEntity;
 import iti.mad.gusto.domain.entity.SearchTagEntity;
 
 public class SearchPresenter implements SearchContract.Presenter {

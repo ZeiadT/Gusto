@@ -27,8 +27,9 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Ca
         onCategoryClickListener = onClick;
     }
 
-    public void setCategories(List<CategoryEntity> categories) {
+    public void setCategories(List<CategoryEntity> categories, OnCategoryClickListener onClick) {
         this.categories = categories;
+        onCategoryClickListener = onClick;
         notifyDataSetChanged();
     }
 

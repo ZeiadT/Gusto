@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.google.services)
+    alias(libs.plugins.safeArgs)
 }
 
 android {
@@ -44,6 +45,8 @@ dependencies {
     implementation libs.fragment
     implementation libs.motiontoast
     implementation libs.palette
+
+    implementation libs.video.player.core
 
     implementation libs.room.runtime
     implementation libs.androidx.preference

@@ -34,12 +34,14 @@ public class ModelToEntityMapper {
     public static MealEntity map(MealModel item) {
         MealEntity mealEntity = new MealEntity();
 
+        mealEntity.setId(item.getIdMeal());
         mealEntity.setName(item.getStrMeal());
         mealEntity.setImage(item.getStrMealThumb());
         mealEntity.setCategory(item.getStrCategory());
         mealEntity.setArea(item.getStrArea());
-        mealEntity.setYoutube(item.getStrYoutube());
-
+        if (item.getStrYoutube() != null){
+            mealEntity.setYoutube(item.getStrYoutube().split("v=")[1]);
+        }
         mealEntity.setIngredients(mapIngredients(item));
         mealEntity.setInstructions(mapInstructions(item.getStrInstructions()));
 

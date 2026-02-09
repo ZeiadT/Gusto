@@ -23,6 +23,8 @@ public class FeaturedMealCard extends MaterialCardView {
     private MaterialButton btnAdd;
     private CheckBox btnFavorite;
 
+    private String mealId;
+
     public FeaturedMealCard(Context context) {
         super(context);
         init(context, null);
@@ -36,6 +38,13 @@ public class FeaturedMealCard extends MaterialCardView {
     public FeaturedMealCard(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context, attrs);
+    }
+
+    public String getMealId() {
+        return mealId;
+    }
+    public void setMealId(String mealId) {
+        this.mealId = mealId;
     }
 
     private void init(Context context, AttributeSet attrs) {
