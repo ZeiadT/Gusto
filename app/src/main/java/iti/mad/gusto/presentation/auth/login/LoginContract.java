@@ -24,5 +24,8 @@ public interface LoginContract {
         void showError(String errMsg);
         void navigateHome();
         void navigateRegister();
+
+        void startLoadingBar();
+        void stopLoadingBar();
     }
 }

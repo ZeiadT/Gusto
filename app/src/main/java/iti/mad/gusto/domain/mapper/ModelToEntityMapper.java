@@ -14,8 +14,22 @@ import iti.mad.gusto.domain.entity.CategoryEntity;
 import iti.mad.gusto.domain.entity.CountryEntity;
 import iti.mad.gusto.domain.entity.IngredientEntity;
 import iti.mad.gusto.domain.entity.InstructionEntity;
+import iti.mad.gusto.domain.entity.SearchTagEntity;
+import iti.mad.gusto.domain.entity.TagType;
 
 public class ModelToEntityMapper {
+    public static SearchTagEntity mapTag(CategoryModel category) {
+
+        return new SearchTagEntity(category.getStrCategory(), TagType.CATEGORY);
+    }
+    public static SearchTagEntity mapTag(CountryModel country) {
+
+        return new SearchTagEntity(country.getStrArea(), TagType.COUNTRY);
+    }
+    public static SearchTagEntity mapTag(IngredientModel ingredient) {
+
+        return new SearchTagEntity(ingredient.getStrIngredient(), TagType.INGREDIENT);
+    }
 
     public static MealEntity map(MealModel item) {
         MealEntity mealEntity = new MealEntity();

@@ -2,6 +2,8 @@ package iti.mad.gusto.data.model;
 
 import androidx.annotation.NonNull;
 
+import java.util.Objects;
+
 public class MealModel {
     private String strImageSource;
     private String strIngredient10;
@@ -331,5 +333,19 @@ public class MealModel {
 
     private String getSafeString(String value) {
         return value == null ? "" : value;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MealModel meal = (MealModel) o;
+        // Replace 'id' with whatever makes your meal unique
+        return Objects.equals(idMeal, meal.idMeal);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(idMeal);
     }
 }

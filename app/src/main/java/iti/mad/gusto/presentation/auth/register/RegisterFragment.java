@@ -1,5 +1,8 @@
 package iti.mad.gusto.presentation.auth.register;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.app.Activity;
 import android.os.Bundle;
 
@@ -23,6 +26,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Objects;
@@ -43,6 +47,7 @@ public class RegisterFragment extends Fragment implements RegisterContract.View 
     private SecondaryIconButton btnFacebook;
     private TextView btnGuest;
     private TextView btnSignIn;
+    private LinearProgressIndicator linearIndicator;
     private RegisterPresenter presenter;
     private NavController navController;
     private AuthActivityCommunicator communicator;
@@ -86,6 +91,8 @@ public class RegisterFragment extends Fragment implements RegisterContract.View 
         btnGoogle = view.findViewById(R.id.btn_google);
         btnFacebook = view.findViewById(R.id.btn_facebook);
         btnGuest = view.findViewById(R.id.btn_guest);
+
+        linearIndicator = view.findViewById(R.id.linear_progress);
     }
 
     private void setListeners() {
@@ -181,4 +188,14 @@ public class RegisterFragment extends Fragment implements RegisterContract.View 
         navController.navigate(R.id.navigate_register_to_login);
     }
 
+    @Override
+    public void startLoadingBar() {
+        linearIndicator.setVisibility(VISIBLE);
+
+    }
+
+    @Override
+    public void stopLoadingBar() {
+        linearIndicator.setVisibility(GONE);
+    }
 }

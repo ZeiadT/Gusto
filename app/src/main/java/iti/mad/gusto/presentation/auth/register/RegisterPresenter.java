@@ -66,9 +66,9 @@ public class RegisterPresenter implements RegisterContract.Presenter {
         Disposable d = authRepository.signInWithEmailAndPassword(email, password)
                 .subscribe(
                         (user) -> {
+                            settingsRepository.setRememberMe(true);
                             view.enableButtons();
                             view.setRegisterButtonIdleWithVibration(() -> VibrationManager.successVibration(context));
-                            settingsRepository.setRememberMe(true);
                             view.navigateHome();
                         },
                         (t) -> {
@@ -85,6 +85,7 @@ public class RegisterPresenter implements RegisterContract.Presenter {
     @Override
     public void registerWithGoogle(Credential credential) {
         view.disableButtons();
+        view.startLoadingBar();
 
         if (credential instanceof CustomCredential && credential.getType().equals(TYPE_GOOGLE_ID_TOKEN_CREDENTIAL)) {
 
@@ -93,6 +94,7 @@ public class RegisterPresenter implements RegisterContract.Presenter {
 
             handleGoogleAuth(googleIdTokenCredential.getIdToken());
         } else {
+            view.stopLoadingBar();
             view.enableButtons();
             view.showError("Credential is not of type Google ID!");
         }
@@ -104,11 +106,14 @@ public class RegisterPresenter implements RegisterContract.Presenter {
         Disposable disposable = authRepository.authenticateWithGoogle(idToken)
                 .subscribe(
                         user -> {
+                            settingsRepository.setRememberMe(true);
                             view.enableButtons();
+                            view.stopLoadingBar();
                             view.navigateHome();
                         },
                         throwable -> {
                             view.enableButtons();
+                            view.stopLoadingBar();
                             view.showError(throwable.getMessage());
                         }
                 );

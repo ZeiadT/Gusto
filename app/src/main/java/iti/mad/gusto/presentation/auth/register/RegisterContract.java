@@ -21,5 +21,8 @@ public interface RegisterContract {
         void showError(String errMsg);
         void navigateHome();
         void navigateLogin();
+
+        void startLoadingBar();
+        void stopLoadingBar();
     }
 }

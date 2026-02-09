@@ -19,14 +19,15 @@
     </iti.mad.gusto.presentation.common.component.ShaderGradientView>
 
     <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/linear_progress"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:indeterminate="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:indicatorColor="@color/colorSecondary"
         android:visibility="gone"
+        app:indicatorColor="@color/colorSecondary"
+        app:layout_constraintEnd_toEndOf="parent"
 
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/shaderGradientView" />
 
     <TextView

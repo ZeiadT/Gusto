@@ -76,6 +76,7 @@ public class LoginPresenter implements LoginContract.Presenter {
     @Override
     public void signInWithGoogle(Credential credential) {
         view.disableButtons();
+        view.startLoadingBar();
 
         if (credential instanceof CustomCredential && credential.getType().equals(TYPE_GOOGLE_ID_TOKEN_CREDENTIAL)) {
 
@@ -85,6 +86,7 @@ public class LoginPresenter implements LoginContract.Presenter {
             handleGoogleAuth(googleIdTokenCredential.getIdToken());
         } else {
             view.enableButtons();
+            view.stopLoadingBar();
             view.showError("Credential is not of type Google ID!");
         }
 
@@ -95,12 +97,14 @@ public class LoginPresenter implements LoginContract.Presenter {
         Disposable disposable = authRepository.authenticateWithGoogle(idToken)
                 .subscribe(
                         user -> {
-                            view.enableButtons();
                             settingsRepository.setRememberMe(true);
+                            view.enableButtons();
+                            view.stopLoadingBar();
                             view.navigateHome();
                         },
                         throwable -> {
                             view.enableButtons();
+                            view.stopLoadingBar();
                             view.showError(throwable.getMessage());
                         }
                 );
@@ -111,17 +115,21 @@ public class LoginPresenter implements LoginContract.Presenter {
     @Override
     public void signInAnonymously() {
 
+        view.startLoadingBar();
+
         view.disableButtons();
         Disposable d = authRepository.signInAnonymously()
                 .subscribe(
                         (user) -> {
-                            view.enableButtons();
                             settingsRepository.setRememberMe(true);
+                            view.enableButtons();
+                            view.stopLoadingBar();
                             view.navigateHome();
                         },
                         (t) -> {
-                            view.showError(t.getMessage());
+                            view.stopLoadingBar();
                             view.enableButtons();
+                            view.showError(t.getMessage());
                         }
                 );
 

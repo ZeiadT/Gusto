@@ -1,5 +1,7 @@
 package iti.mad.gusto.domain.entity;
 
+import androidx.annotation.NonNull;
+
 import java.util.List;
 
 public class MealEntity {
@@ -65,5 +67,19 @@ public class MealEntity {
 
     public List<InstructionEntity> getInstructions() {
         return instructions;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "MealEntity{" +
+                "name='" + name + '\'' +
+                ", category='" + category + '\'' +
+                ", area='" + area + '\'' +
+                ", image='" + image + '\'' +
+                ", youtube='" + youtube + '\'' +
+                ", ingredients=" + ingredients +
+                ", instructions=" + instructions +
+                '}';
     }
 }

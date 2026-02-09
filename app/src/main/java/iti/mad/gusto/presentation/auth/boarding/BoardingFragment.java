@@ -14,6 +14,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import iti.mad.gusto.R;
 import iti.mad.gusto.data.model.BoardingItem;
@@ -37,6 +39,7 @@ public class BoardingFragment extends Fragment implements BoardingContract.View 
 
     private BoardingContract.Presenter presenter;
     private BoardingItem lastItemRendered;
+    NavController navController;
 
     @Nullable
     @Override
@@ -59,6 +62,7 @@ public class BoardingFragment extends Fragment implements BoardingContract.View 
 
         int startPos = (savedInstanceState != null) ? savedInstanceState.getInt(POSITION_KEY, 0) : 0;
         presenter.init(startPos);
+        navController = Navigation.findNavController(view);
     }
 
     private void initUI(View view) {
@@ -107,12 +111,7 @@ public class BoardingFragment extends Fragment implements BoardingContract.View 
 
     @Override
     public void navigateToLogin() {
-        FragmentManager parentManager = getParentFragmentManager();
-        if (!parentManager.isDestroyed()) {
-            parentManager.beginTransaction()
-                    .replace(R.id.frag_container_auth, new LoginFragment())
-                    .commitNow();
-        }
+        navController.navigate(R.id.navigate_boarding_to_login);
     }
 
     @Override

@@ -1,5 +1,8 @@
 package iti.mad.gusto.presentation.auth.login;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.app.Activity;
 import android.os.Bundle;
 
@@ -13,6 +16,7 @@ import androidx.credentials.GetCredentialResponse;
 import androidx.credentials.exceptions.GetCredentialException;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.os.CancellationSignal;
@@ -32,6 +36,7 @@ import iti.mad.gusto.presentation.common.util.ThemeAwareIconToastWithVibration;
 import iti.mad.gusto.presentation.main.activity.MainActivity;
 
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Objects;
@@ -50,6 +55,7 @@ public class LoginFragment extends Fragment implements LoginContract.View {
     private LoginPresenter presenter;
     private AuthActivityCommunicator communicator;
     private NavController navController;
+    private LinearProgressIndicator linearProgress;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -99,6 +105,7 @@ public class LoginFragment extends Fragment implements LoginContract.View {
         btnGoogle = view.findViewById(R.id.btn_google);
         btnFacebook = view.findViewById(R.id.btn_facebook);
         btnGuest = view.findViewById(R.id.btn_guest);
+        linearProgress = view.findViewById(R.id.linear_progress);
     }
 
     private void setListeners() {
@@ -195,5 +202,16 @@ public class LoginFragment extends Fragment implements LoginContract.View {
     @Override
     public void navigateRegister() {
         navController.navigate(R.id.navigate_login_to_register);
+    }
+
+    @Override
+    public void startLoadingBar() {
+        linearProgress.setVisibility(VISIBLE);
+
+    }
+
+    @Override
+    public void stopLoadingBar() {
+        linearProgress.setVisibility(GONE);
     }
 }

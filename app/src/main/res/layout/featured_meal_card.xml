@@ -28,22 +28,19 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <ImageButton
+        <CheckBox
             android:id="@+id/btnFavorite"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:background="@drawable/bg_circle"
-            android:clickable="true"
-            android:contentDescription="Favorite"
-            android:elevation="4dp"
-            android:focusable="true"
+            android:button="@drawable/bookmark"
+            app:buttonTint="@color/colorSecondary"
             android:padding="8dp"
-            android:src="@drawable/bookmark"
+            android:elevation="4dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/colorSecondary" />
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
             android:id="@+id/tvTitle"

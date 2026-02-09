@@ -53,4 +53,7 @@
     <string name="today_s_suggested_categories">Today\'s Suggested Categories</string>
     <string name="category_image">Category Image</string>
     <string name="popular_countries">Popular Countries</string>
+    <string name="add_tags_e_g_beef">Add tags (e.g. #Beef)</string>
+    <string name="search_meals_e_g_pesto_pasta">Search Meals (e.g. Pesto Pasta)</string>
+    <string name="clear">Clear</string>
 </resources>

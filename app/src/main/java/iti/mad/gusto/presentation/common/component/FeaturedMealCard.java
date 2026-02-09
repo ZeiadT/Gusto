@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,7 +21,7 @@ public class FeaturedMealCard extends MaterialCardView {
     private ImageView ivMealImage;
     private TextView tvTitle, tvSubtitle;
     private MaterialButton btnAdd;
-    private ImageButton btnFavorite;
+    private CheckBox btnFavorite;
 
     public FeaturedMealCard(Context context) {
         super(context);

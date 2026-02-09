@@ -18,7 +18,7 @@ public class DiscoverPresenter implements DiscoverContract.Presenter{
     CompositeDisposable disposables;
     public DiscoverPresenter(DiscoverContract.View view){
         this.view = view;
-        mealRepository = new MealRepository();
+        mealRepository = MealRepository.getInstance();
         disposables = new CompositeDisposable();
     }
     @Override
