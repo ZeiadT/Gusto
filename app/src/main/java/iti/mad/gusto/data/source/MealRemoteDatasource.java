@@ -50,6 +50,9 @@ public class MealRemoteDatasource {
     }
 
     public Single<List<MealModel>> searchByName(String query) {
+        if (query == null || query.isBlank()){
+            return getMeals();
+        }
         return mealService.searchByName(query).map(MealResponse::getMeals).compose(ioScheduler());
     }
 
@@ -92,17 +95,25 @@ public class MealRemoteDatasource {
     }
 
     public Single<List<MealModel>> searchByCategory(String query) {
-        return mealService.searchByCategory(query).map(MealResponse::getMeals).compose(ioScheduler());
+        return mealService.searchByCategory(query)
+                // FIX: Check for null. If null, return empty list.
+                .map(response -> response.getMeals() != null ? response.getMeals() : new ArrayList<MealModel>())
+                .compose(ioScheduler());
     }
 
     public Single<List<MealModel>> searchByArea(String query) {
-        return mealService.searchByArea(query).map(MealResponse::getMeals).compose(ioScheduler());
+        return mealService.searchByArea(query)
+                // FIX applied here
+                .map(response -> response.getMeals() != null ? response.getMeals() : new ArrayList<MealModel>())
+                .compose(ioScheduler());
     }
 
     public Single<List<MealModel>> searchByIngredient(String query) {
-        return mealService.searchByIngredient(query).map(MealResponse::getMeals).compose(ioScheduler());
+        return mealService.searchByIngredient(query)
+                // FIX applied here
+                .map(response -> response.getMeals() != null ? response.getMeals() : new ArrayList<MealModel>())
+                .compose(ioScheduler());
     }
-
     public Observable<List<SearchTagEntity>> searchForTags(String query) {
         final String normalizedQuery = prepareToCompare(query);
 

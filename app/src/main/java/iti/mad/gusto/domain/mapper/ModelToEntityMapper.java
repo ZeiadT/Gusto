@@ -39,7 +39,7 @@ public class ModelToEntityMapper {
         mealEntity.setImage(item.getStrMealThumb());
         mealEntity.setCategory(item.getStrCategory());
         mealEntity.setArea(item.getStrArea());
-        if (item.getStrYoutube() != null){
+        if (item.getStrYoutube() != null && !item.getStrYoutube().isEmpty() && item.getStrYoutube().contains("v=")){
             mealEntity.setYoutube(item.getStrYoutube().split("v=")[1]);
         }
         mealEntity.setIngredients(mapIngredients(item));
@@ -60,7 +60,6 @@ public class ModelToEntityMapper {
 
 
     public static CategoryEntity map(CategoryModel item) {
-        // Assuming CategoryEntity constructor takes (name, image, desc, icon)
         return new CategoryEntity(
                 item.getStrCategory(),
                 item.getStrCategoryThumb(),
@@ -147,7 +146,6 @@ public class ModelToEntityMapper {
 
         if (instructionsText == null) return instructions;
 
-        // Split by period to create steps
         String[] steps = instructionsText.split("\\.");
 
         for (String step : steps) {

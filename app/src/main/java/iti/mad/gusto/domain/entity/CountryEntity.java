@@ -10,4 +10,8 @@ public class CountryEntity {
         public CountryEntity(String name) {
             this.name = name;
         }
+
+        public SearchTagEntity toTag(){
+            return new SearchTagEntity(name, TagType.COUNTRY);
+        }
     }

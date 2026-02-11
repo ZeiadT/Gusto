@@ -58,4 +58,16 @@
     <string name="clear">Clear</string>
     <string name="ingredients">Ingredients</string>
     <string name="instructions">Instructions</string>
+    <string name="add_meal">Add Meal</string>
+    <string name="add">Add</string>
+    <string name="items">Items</string>
+    <string name="breakfast">Breakfast</string>
+    <string name="_8_00_am">8:00 AM</string>
+    <string name="_7_30_pm">7:30 PM</string>
+    <string name="dinner">Dinner</string>
+    <string name="no_meal_scheduled">No Meal Scheduled</string>
+    <string name="date">Date</string>
+    <string name="meal_type">Meal Type</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
 </resources>

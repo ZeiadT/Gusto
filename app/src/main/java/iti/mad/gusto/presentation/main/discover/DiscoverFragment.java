@@ -6,10 +6,10 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,21 +23,24 @@ import iti.mad.gusto.R;
 import iti.mad.gusto.domain.entity.CategoryEntity;
 import iti.mad.gusto.domain.entity.CountryEntity;
 import iti.mad.gusto.domain.entity.MealEntity;
+import iti.mad.gusto.domain.entity.SearchTagEntity;
+import iti.mad.gusto.presentation.common.component.AddToPlanBottomSheet;
 import iti.mad.gusto.presentation.common.component.FeaturedMealCard;
+import iti.mad.gusto.presentation.common.util.ThemeAwareIconToast;
 import iti.mad.gusto.presentation.mealdetails.MealDetailsActivity;
 
-public class DiscoverFragment extends Fragment implements DiscoverContract.View{
+public class DiscoverFragment extends Fragment implements DiscoverContract.View {
     RecyclerView recyclerView;
     FeaturedMealCard cardDailySpecial;
     ChipGroup countriesGroup;
-    CategoriesAdapter adapter;
+    CategoriesAdapter categoryAdapter;
     DiscoverContract.Presenter presenter;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new DiscoverPresenter(this);
+        presenter = new DiscoverPresenter(requireContext(), this);
     }
 
     @Override
@@ -53,11 +56,11 @@ public class DiscoverFragment extends Fragment implements DiscoverContract.View{
         cardDailySpecial = view.findViewById(R.id.cardDailySpecial);
         countriesGroup = view.findViewById(R.id.chipGroupCountries);
 
+        categoryAdapter = new CategoriesAdapter(cat -> navigateToSearchWithTag(cat.toTag()));
 
-        adapter = new CategoriesAdapter(presenter::onCategoryClicked);
         recyclerView = view.findViewById(R.id.categories_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(categoryAdapter);
     }
 
     @Override
@@ -70,8 +73,15 @@ public class DiscoverFragment extends Fragment implements DiscoverContract.View{
             intent.putExtra("mealId", cardDailySpecial.getMealId());
             startActivity(intent);
         });
-        cardDailySpecial.setOnAddClickListener(v -> {});
-        cardDailySpecial.setOnFavoriteClickListener(v -> {});
+        cardDailySpecial.setOnAddClickListener(v -> {
+            AddToPlanBottomSheet bottomSheet = AddToPlanBottomSheet.newInstance();
+            bottomSheet.show(getParentFragmentManager(), "AddToPlanBottomSheet");
+            bottomSheet.setOnConfirmListener((date, mealType) -> {
+                presenter.onFeaturedMealAddToPlan(date, mealType);
+            });
+        });
+        cardDailySpecial.setOnFavoriteClickListener(v -> {
+        });
     }
 
     @Override
@@ -89,13 +99,12 @@ public class DiscoverFragment extends Fragment implements DiscoverContract.View{
 
     @Override
     public void setCategories(List<CategoryEntity> categories) {
-        adapter.setCategories(categories, category -> {
-
-        });
+        categoryAdapter.setCategories(categories);
     }
 
     @Override
     public void setCountries(List<CountryEntity> countries) {
+        countriesGroup.removeAllViews();
 
         for (CountryEntity country : countries) {
             addCountryChip(country);
@@ -104,7 +113,7 @@ public class DiscoverFragment extends Fragment implements DiscoverContract.View{
 
     @Override
     public void showError(String errMsg) {
-        Log.d("TAG", "showError: errorrrrrr");
+        ThemeAwareIconToast.error(requireContext(), errMsg);
     }
 
     private void addCountryChip(CountryEntity country) {
@@ -113,9 +122,20 @@ public class DiscoverFragment extends Fragment implements DiscoverContract.View{
 
         chip.setText(country.getName());
 
-        chip.setOnClickListener(v -> presenter.onCountryClicked(country));
+        chip.setOnClickListener(v -> navigateToSearchWithTag(country.toTag()));
 
         countriesGroup.addView(chip);
+    }
+
+    private void navigateToSearchWithTag(SearchTagEntity tag) {
+
+        DiscoverFragmentDirections.ActionDiscoverToSearch action =
+                DiscoverFragmentDirections.actionDiscoverToSearch()
+                        .setSearchTag(tag);
+
+        if (getView() != null) {
+            Navigation.findNavController(getView()).navigate(action);
+        }
     }
 
 }

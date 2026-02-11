@@ -6,20 +6,23 @@ import iti.mad.gusto.domain.entity.MealEntity;
 import iti.mad.gusto.domain.entity.SearchTagEntity;
 
 public interface SearchContract {
-    interface View{
+    interface View {
         void showSearchTags(List<SearchTagEntity> results);
-        List<SearchTagEntity> getSelectedTags();
-        void showSelectedTags(List<SearchTagEntity> results);
+        void showSelectedTags(List<SearchTagEntity> tags);
         void showMeals(List<MealEntity> meals);
-
-
+        void showError(String errMsg);
+        void navigateToMealDetails(String mealId);
+        void clearTagSearchBar();
     }
 
-    interface Presenter{
+    interface Presenter {
         void searchForTag(String query);
         void searchForMeals(String query);
-
+        void onTagSelected(SearchTagEntity tag);
+        void onTagRemoved(SearchTagEntity tag);
+        void onClearTagsClicked();
+        void onMealClicked(MealEntity meal);
+        void restoreState(List<SearchTagEntity> tags, String query, List<MealEntity> meals);
         void onDetach();
-
     }
 }

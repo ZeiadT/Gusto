@@ -62,6 +62,7 @@ video-player-core = { group = "com.pierfrancescosoffritti.androidyoutubeplayer",
 rx-java = {group = "io.reactivex.rxjava3", name = "rxjava", version.ref = "rx-java"}
 rx-android = {group = "io.reactivex.rxjava3", name = "rxandroid", version.ref = "rx-android"}
 rx-ritrofit-adapter = {module = "com.squareup.retrofit2:adapter-rxjava3", version.ref = "rx-ritrofit-adapter" }
+androidx-room-rxjava3 = { module = "androidx.room:room-rxjava3", version.ref = "room" }
 
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics"}
@@ -84,5 +85,5 @@ safeArgs = { id = "androidx.navigation.safeargs", version.ref = "navigation" }
 [bundles]
 networking = ["retrofit-core", "retrofit-converter-gson", "google-gson"]
 firebase = ["firebase-analytics", "firebase-auth", "firebase-firestore"]
-rx-java = ["rx-java", "rx-android", "rx-ritrofit-adapter"]
+rx-java = ["rx-java", "rx-android", "rx-ritrofit-adapter", "androidx-room-rxjava3"]
 google-auth = ["credentials", "credentials-play-services-auth", "googleid", "play-services-auth"]

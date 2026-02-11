@@ -9,6 +9,7 @@ import static iti.mad.gusto.presentation.common.util.IconToastKt.warningToastDar
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.util.Log;
 
 import iti.mad.gusto.core.managers.VibrationManager;
 
@@ -43,6 +44,8 @@ public class ThemeAwareIconToast {
         } else {
             errorToast(context, message);
         }
+
+        Log.d("ToastError", "error: " + message);
     }
 
 

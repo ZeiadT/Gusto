@@ -35,6 +35,10 @@ public class MealSearchAdapter extends RecyclerView.Adapter<MealSearchAdapter.Me
         this.mealList = newMeals;
         notifyDataSetChanged();
     }
+    public List<MealEntity> getList() {
+        return mealList;
+    }
+
 
     @NonNull
     @Override

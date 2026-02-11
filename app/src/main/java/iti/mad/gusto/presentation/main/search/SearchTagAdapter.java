@@ -1,4 +1,4 @@
-package iti.mad.gusto.ui.adapter;
+package iti.mad.gusto.presentation.main.search;
 
 import android.content.Context;
 import android.view.LayoutInflater;

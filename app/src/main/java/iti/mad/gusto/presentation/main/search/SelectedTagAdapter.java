@@ -21,26 +21,20 @@ import iti.mad.gusto.presentation.common.util.ColorUtil;
 
 public class SelectedTagAdapter extends RecyclerView.Adapter<SelectedTagAdapter.TagViewHolder> {
     List<SearchTagEntity> tags;
+    OnTagRemovedListener removeListener;
 
-    public SelectedTagAdapter() {
+    public SelectedTagAdapter(OnTagRemovedListener removeListener) {
         tags = new ArrayList<>();
-    }
-
-    public SelectedTagAdapter(List<SearchTagEntity> tags) {
-        this.tags = tags;
+        this.removeListener = removeListener;
     }
 
     public void setTags(List<SearchTagEntity> tags){
         this.tags = tags;
         notifyDataSetChanged();
     }
-    public void addTag(SearchTagEntity tag){
-        if (isDuplicateTag(tag)) return;
-        tags.add(tag);
-        notifyDataSetChanged();
-    }
     public void removeTag(SearchTagEntity tag){
         tags.remove(tag);
+        removeListener.onChange(tag);
         notifyDataSetChanged();
     }
 
@@ -48,7 +42,9 @@ public class SelectedTagAdapter extends RecyclerView.Adapter<SelectedTagAdapter.
         return tags;
     }
 
-
+    public interface OnTagRemovedListener {
+        void onChange(SearchTagEntity tags);
+    }
 
     @NonNull
     @Override

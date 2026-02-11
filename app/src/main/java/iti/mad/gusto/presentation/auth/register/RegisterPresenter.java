@@ -63,7 +63,7 @@ public class RegisterPresenter implements RegisterContract.Presenter {
             return;
         }
 
-        Disposable d = authRepository.signInWithEmailAndPassword(email, password)
+        Disposable d = authRepository.createUserWithEmailAndPassword(email, password)
                 .subscribe(
                         (user) -> {
                             settingsRepository.setRememberMe(true);

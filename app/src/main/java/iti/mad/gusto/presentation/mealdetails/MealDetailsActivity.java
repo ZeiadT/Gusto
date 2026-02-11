@@ -12,13 +12,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 
 import iti.mad.gusto.R;
 import iti.mad.gusto.domain.entity.MealEntity;
+import iti.mad.gusto.presentation.common.component.AddToPlanBottomSheet;
 import iti.mad.gusto.presentation.common.util.ImageUtil;
+import iti.mad.gusto.presentation.common.util.ThemeAwareIconToast;
 
 public class MealDetailsActivity extends AppCompatActivity implements MealDetailsContract.View {
     private YouTubePlayerView youTubePlayerView;
@@ -31,10 +34,9 @@ public class MealDetailsActivity extends AppCompatActivity implements MealDetail
     private TextView mealCountryTextView;
     private TextView mealInstructionsTextView;
     private TextView mealIngredientsTextView;
-
+    private FloatingActionButton addToPlanButton;
     private CheckBox favoriteCheckBox;
     private ImageButton backButton;
-
 
 
     MealDetailsContract.Presenter presenter;
@@ -44,6 +46,7 @@ public class MealDetailsActivity extends AppCompatActivity implements MealDetail
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_meal_details);
 
+        addToPlanButton = findViewById(R.id.addToPlanBtn);
         favoriteCheckBox = findViewById(R.id.btnFavorite);
         backButton = findViewById(R.id.btnBack);
 
@@ -63,7 +66,7 @@ public class MealDetailsActivity extends AppCompatActivity implements MealDetail
 
         initIngredientsRecyclerView();
 
-        presenter = new MealDetailsPresenter(this);
+        presenter = new MealDetailsPresenter(this, this);
 
         backButton.setOnClickListener(v -> finish());
 
@@ -71,6 +74,14 @@ public class MealDetailsActivity extends AppCompatActivity implements MealDetail
         if (extras != null) {
             presenter.getMealDetails(extras.getString("mealId"));
         }
+
+        addToPlanButton.setOnClickListener(v -> {
+            AddToPlanBottomSheet bottomSheet = AddToPlanBottomSheet.newInstance();
+            bottomSheet.show(getSupportFragmentManager(), "AddToPlanBottomSheet");
+            bottomSheet.setOnConfirmListener((date, mealType) -> {
+                presenter.onFeaturedMealAddToPlan(date, mealType);
+            });
+        });
     }
 
     void initIngredientsRecyclerView() {
@@ -92,21 +103,23 @@ public class MealDetailsActivity extends AppCompatActivity implements MealDetail
         mealCountryTextView.setText(meal.getArea());
         mealInstructionsTextView.setText(meal.getInstructions().get(0).getStep());
         ingredientAdapter.setIngredients(meal.getIngredients());
-        mealIngredientsTextView.setText(meal.getIngredients().size() + " items");
+        String itemsLocalized = getString(R.string.items);
+        mealIngredientsTextView.setText(meal.getIngredients().size() + " " + itemsLocalized);
         ImageUtil.loadFromNetwork(this, mealImageView, meal.getImage());
-        youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener(){
-            @Override
-            public void onReady(@NonNull YouTubePlayer youTubePlayer) {
-                youTubePlayer.loadVideo(meal.getYoutube(), 0);
-            }
+        if (meal.getYoutube() != null) {
 
-
-        });
+            youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
+                @Override
+                public void onReady(@NonNull YouTubePlayer youTubePlayer) {
+                    youTubePlayer.loadVideo(meal.getYoutube(), 0);
+                }
+            });
+        }
     }
 
     @Override
     public void showError(String message) {
-
+        ThemeAwareIconToast.error(this, message);
     }
 
     @Override

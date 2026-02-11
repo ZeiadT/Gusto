@@ -1,6 +1,11 @@
 package iti.mad.gusto.domain.entity;
 
-public class SearchTagEntity {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
+public class SearchTagEntity implements Parcelable {
     private String tagName;
     private TagType tagType;
 
@@ -13,6 +18,15 @@ public class SearchTagEntity {
         this.tagType = tagType;
     }
 
+    protected SearchTagEntity(Parcel in) {
+        tagName = in.readString();
+        int tagTypeOrdinal = in.readInt();
+        if (tagTypeOrdinal == -1) {
+            tagType = null;
+        } else {
+            tagType = TagType.values()[tagTypeOrdinal];
+        }
+    }
     public String getTagName() {
         return tagName;
     }
@@ -27,5 +41,29 @@ public class SearchTagEntity {
 
     public void setTagType(TagType tagType) {
         this.tagType = tagType;
+    }
+
+
+    public static final Creator<SearchTagEntity> CREATOR = new Creator<>() {
+        @Override
+        public SearchTagEntity createFromParcel(Parcel in) {
+            return new SearchTagEntity(in);
+        }
+
+        @Override
+        public SearchTagEntity[] newArray(int size) {
+            return new SearchTagEntity[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeString(this.tagName);
+        dest.writeInt(this.tagType == null ? -1 : this.tagType.ordinal());
     }
 }

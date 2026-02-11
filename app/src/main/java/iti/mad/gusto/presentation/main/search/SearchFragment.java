@@ -26,8 +26,8 @@ import java.util.Objects;
 import iti.mad.gusto.R;
 import iti.mad.gusto.domain.entity.MealEntity;
 import iti.mad.gusto.domain.entity.SearchTagEntity;
+import iti.mad.gusto.presentation.common.util.ThemeAwareIconToast;
 import iti.mad.gusto.presentation.mealdetails.MealDetailsActivity;
-import iti.mad.gusto.ui.adapter.SearchTagAdapter;
 
 public class SearchFragment extends Fragment implements SearchContract.View {
     TextInputEditText searchMealEditText;
@@ -63,98 +63,112 @@ public class SearchFragment extends Fragment implements SearchContract.View {
 
         presenter = new SearchPresenter(this);
 
-        initSelectedTagsView();
-        initTagSearchBar();
-        initMealSearchBar();
-        initMealRecyclerView();
+        initViews();
 
+        if (savedInstanceState != null) {
+            presenter.restoreState(
+                    savedInstanceState.getParcelableArrayList("selectedTags"),
+                    savedInstanceState.getString("searchQuery"),
+                    savedInstanceState.getParcelableArrayList("searchedMeals")
+            );
+        } else if (getArguments() != null) {
+            SearchFragmentArgs args = SearchFragmentArgs.fromBundle(getArguments());
+            if (args.getSearchTag() != null) {
+                presenter.onTagSelected(args.getSearchTag());
+            }
+        }
     }
 
-    void initMealSearchBar() {
-        searchMealEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void afterTextChanged(Editable s) {
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
 
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence query, int start, int before, int count) {
-                presenter.searchForMeals(query.toString());
-            }
-        });
-
+        outState.putParcelableArrayList("selectedTags", new ArrayList<>(selectedTagsAdapter.getTags()));
+        outState.putString("searchQuery", Objects.requireNonNull(searchMealEditText.getText()).toString());
+        outState.putParcelableArrayList("searchedMeals", new ArrayList<>(mealSearchAdapter.getList()));
     }
-    void initSelectedTagsView() {
-        selectedTagsAdapter = new SelectedTagAdapter();
-        tagsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
-        tagsRecyclerView.setAdapter(selectedTagsAdapter);
-    }
-    void initTagSearchBar() {
-        searchTagsAdapter = new SearchTagAdapter(requireContext(), new ArrayList<>());
-        searchTagEditText.setAdapter(searchTagsAdapter);
-        searchTagEditText.setThreshold(3);
 
-        searchTagEditText.setOnItemClickListener((parent, view2, position, id) -> {
+    void initViews() {
+        // Tag Search Bar -- On Item Clicked
+        searchTagEditText.setOnItemClickListener((parent, view, position, id) -> {
             SearchTagEntity selectedItem = (SearchTagEntity) parent.getItemAtPosition(position);
-            selectedTagsAdapter.addTag(selectedItem);
-            searchTagEditText.setText("");
-            presenter.searchForMeals(Objects.requireNonNull(searchMealEditText.getText()).toString());
+            presenter.onTagSelected(selectedItem);
         });
-        clearBtn.setOnClickListener(v -> {
-            selectedTagsAdapter.setTags(new ArrayList<>());
-        });
+
+        // Tag Search Bar -- On Text Change
         searchTagEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void afterTextChanged(Editable s) {
+            public void onTextChanged(CharSequence query, int i, int i1, int i2) {
+                presenter.searchForTag(query.toString());
+            }
 
+            @Override
+            public void afterTextChanged(Editable s) {
             }
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+        });
 
+        // Tag Search Bar -- On Clear Clicked
+        clearBtn.setOnClickListener(v -> presenter.onClearTagsClicked());
+
+        // Selected Tags -- On Tag Removed
+        selectedTagsAdapter = new SelectedTagAdapter(tag -> presenter.onTagRemoved(tag));
+        searchTagsAdapter = new SearchTagAdapter(requireContext(), new ArrayList<>());
+
+        // Meal Search Bar -- On Text Change
+        searchMealEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence query, int i, int i1, int i2) {
+                presenter.searchForMeals(query.toString());
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                presenter.searchForTag(s.toString());
+            public void afterTextChanged(Editable s) {
+            }
 
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
         });
-    }
-    void initMealRecyclerView() {
-        mealSearchAdapter = new MealSearchAdapter(requireContext(), new MealSearchAdapter.OnMealClickListener(){
 
+        mealSearchAdapter = new MealSearchAdapter(requireContext(), new MealSearchAdapter.OnMealClickListener() {
             @Override
             public void onMealClick(MealEntity meal) {
-                Intent intent = new Intent(requireContext(), MealDetailsActivity.class);
-                intent.putExtra("mealId", meal.getId());
-                startActivity(intent);
+                presenter.onMealClicked(meal);
             }
 
             @Override
-            public void onFavoriteClick(MealEntity meal, boolean isFavorite) {
-
-            }
+            public void onFavoriteClick(MealEntity meal, boolean isFavorite) {/*todo implement add to favorite button*/}
         });
+
+
+        tagsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
+        tagsRecyclerView.setAdapter(selectedTagsAdapter);
+
+        searchTagEditText.setAdapter(searchTagsAdapter);
 
         mealsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         mealsRecyclerView.setAdapter(mealSearchAdapter);
     }
 
-
     @Override
-    public List<SearchTagEntity> getSelectedTags() {
-        return selectedTagsAdapter.getTags();
+    public void showSelectedTags(List<SearchTagEntity> tags) {
+        selectedTagsAdapter.setTags(tags);
     }
 
     @Override
-    public void showSelectedTags(List<SearchTagEntity> results) {
+    public void clearTagSearchBar() {
+        searchTagEditText.setText("");
+    }
 
+    @Override
+    public void navigateToMealDetails(String mealId) {
+        Intent intent = new Intent(requireContext(), MealDetailsActivity.class);
+        intent.putExtra("mealId", mealId);
+        startActivity(intent);
     }
 
     @Override
@@ -166,34 +180,9 @@ public class SearchFragment extends Fragment implements SearchContract.View {
     public void showMeals(List<MealEntity> meals) {
         mealSearchAdapter.setList(meals);
     }
+
+    @Override
+    public void showError(String errMsg) {
+        ThemeAwareIconToast.error(requireContext(), errMsg);
+    }
 }
-
-/*
- * Plan
- *
- * 1- text field for tags search
- * 2- dropdown list of possible tag options
- *
- * 3- search field for meals
- *
- * 4- list of selected tags with close icon
- * 5- recycler view with search results
- *
- * 6- on click go to details
- * 7- can add directly to favs
- *
- *
- *
- *
- * */
-
-/*
- * Fixes
- *
- * color mark each tag (category, ingredient, country)
- * don't allow duplication
- * autohint for fields
- *
- * solve focus behaviour
- *
- * */
