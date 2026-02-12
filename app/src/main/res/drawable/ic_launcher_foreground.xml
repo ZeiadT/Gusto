@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="582.73"
+    android:viewportHeight="629.34">
+  <group android:scaleX="0.36780328"
+      android:scaleY="0.39722222"
+      android:translateX="184.2"
+      android:translateY="189.67609">
+
+      <path
+          android:name="smilePath"
+          android:pathData="M515.59,382.37a35.2,35.2 0,0 1,-29.29 -15.6c-15.09,-22.45 -17.8,-26.49 -57.05,-31.74 -12,-1.59 -29.27,4.74 -52.81,19.39a35.25,35.25 0,0 1,-37.25 -59.85c39.06,-24.3 69.7,-33.37 99.39,-29.41 60.9,8.13 81.19,25 106.23,62.3a35.25,35.25 0,0 1,-29.22 54.91Z"
+          android:fillColor="@color/ic_launcher_smile"/>
+
+      <path
+          android:name="leftEyePath"
+          android:pathData="M192.59,299.54a41.67,41.67 0,1 1,-41.68 41.67A41.69,41.69 0,0 1,192.59 299.54Z"
+          android:fillColor="@color/ic_launcher_smile"
+          android:fillType="evenOdd"/>
+
+      <path
+          android:name="mouthPath"
+          android:pathData="M291.42,629.34c-154.53,0 -234.72,-101.73 -255.53,-155.51a35.25,35.25 0,0 1,65.75 -25.44c11.88,30.72 69.15,110.45 189.78,110.45 83.6,0 156.13,-52.89 172.46,-125.75a35.25,35.25 0,1 1,68.79 15.41C509.18,553.28 407.72,629.34 291.42,629.34Z"
+          android:fillColor="@color/ic_launcher_smile"/>
+
+      <path
+          android:name="leftArcPath"
+          android:pathData="M40.56,358.58A35.27,35.27 0,0 1,6 330.21C-16.47,217.26 25.45,85.3 108,9.32a35.25,35.25 0,0 1,47.76 51.86C91.38,120.42 57.5,227.77 75.16,316.44A35.25,35.25 0,0 1,47.48 357.9,35.67 35.67,0 0,1 40.56,358.58Z"
+          android:fillColor="@color/ic_launcher_hair"/>
+
+      <path
+          android:name="topArcPath"
+          android:pathData="M167.85,256.87a35.29,35.29 0,0 1,-32.94 -47.79C158,148.48 197.17,97.14 248.29,60.61 298.43,24.77 359,3.84 423.53,0.06a35.25,35.25 0,0 1,4.12 70.38c-105.39,6.17 -190.2,67.36 -226.85,163.7A35.26,35.26 0,0 1,167.85 256.87Z"
+          android:fillColor="@color/ic_launcher_hair"/>
+
+      <path
+          android:name="rightArcPath"
+          android:pathData="M303.75,264.89a35.25,35.25 0,0 1,-20.22 -64.15c90.58,-63.28 182.43,-83.14 273,-59a35.25,35.25 0,1 1,-18.13 68.12c-69.58,-18.52 -141.75,-2.14 -214.51,48.69A35.11,35.11 0,0 1,303.75 264.89Z"
+          android:fillColor="@color/ic_launcher_hair"/>
+  </group>
+</vector>

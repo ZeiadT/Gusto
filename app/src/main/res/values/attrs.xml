@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="PolygonView">
+        <attr name="color" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="DotIndicator">
+        <attr name="inactive_color" format="color" />
+        <attr name="inactive_width" format="dimension" />
+        <attr name="inactive_height" format="dimension" />
+        <attr name="active_color" format="color" />
+        <attr name="active_width" format="dimension" />
+        <attr name="active_height" format="dimension" />
+        <attr name="dot_margin" format="dimension" />
+        <attr name="common_height" format="dimension" />
+        <attr name="count" format="integer" />
+        <attr name="animation_duration" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="SecondaryIconButton">
+        <attr name="sb_icon" format="reference" />
+        <attr name="sb_text" format="string" />
+
+        <attr name="sb_backgroundColor" format="color" />
+        <attr name="sb_iconTint" format="color" />
+        <attr name="sb_textColor" format="color" />
+        <attr name="sb_fontFamily" format="reference" />
+
+        <attr name="sb_cornerRadius" format="dimension" />
+        <attr name="sb_strokeColor" format="color" />
+        <attr name="sb_strokeWidth" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="FeaturedMealCard">
+        <attr name="mealTitle" format="string" />
+        <attr name="mealSubtitle" format="string" />
+        <attr name="mealImage" format="reference" />
+        <attr name="cardRadius" format="dimension" />
+    </declare-styleable>
+</resources>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_main"
+    app:startDestination="@id/discoverFragment">
+
+    <fragment
+        android:id="@+id/discoverFragment"
+        android:name="iti.mad.gusto.presentation.main.discover.DiscoverFragment"
+        android:label="DiscoverFragment" >
+        <action
+            android:id="@+id/action_discover_to_search"
+            app:destination="@id/searchFragment"
+            app:enterAnim="@anim/slide_right_to_center"
+            app:exitAnim="@anim/slide_center_to_left"
+            app:popEnterAnim="@anim/slide_left_to_center"
+            app:popExitAnim="@anim/slide_center_to_right" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="iti.mad.gusto.presentation.main.search.SearchFragment"
+        android:label="SearchFragment">
+        <argument
+            android:name="searchTag"
+            app:argType="iti.mad.gusto.domain.entity.SearchTagEntity"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/favouriteFragment"
+        android:name="iti.mad.gusto.presentation.main.favourite.FavouriteFragment"
+        android:label="FavouriteFragment" />
+    <fragment
+        android:id="@+id/planFragment"
+        android:name="iti.mad.gusto.presentation.main.plan.PlanFragment"
+        android:label="PlanFragment" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="iti.mad.gusto.presentation.main.settings.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
+</navigation>

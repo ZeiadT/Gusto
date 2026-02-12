@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/vector_logo">
+
+    <target
+        android:name="smileGroup"
+        android:animation="@animator/animator_explode_face" />
+    <target
+        android:name="leftEyeExplosionGroup"
+        android:animation="@animator/animator_explode_face" />
+    <target
+        android:name="mouthGroup"
+        android:animation="@animator/animator_explode_face" />
+
+    <target
+        android:name="leftArcGroup"
+        android:animation="@animator/animator_explode_arcs" />
+    <target
+        android:name="topArcGroup"
+        android:animation="@animator/animator_explode_arcs" />
+    <target
+        android:name="rightArcGroup"
+        android:animation="@animator/animator_explode_arcs" />
+
+    <target
+        android:name="leftEyeWinkGroup"
+        android:animation="@animator/animator_wink" />
+
+</animated-vector>

@@ -1,0 +1,36 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Base.Theme.Gusto" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="fontFamily">@font/montserrat</item>
+
+        <item name="colorPrimary">@color/green_lifted</item>
+        <item name="colorOnPrimary">@color/black_900</item>
+        <item name="colorPrimaryContainer">@color/green_dark_bg</item>
+        <item name="colorOnPrimaryContainer">@color/green_lifted</item>
+
+        <item name="colorSecondary">@color/orange_300</item>
+        <item name="colorOnSecondary">@color/black_900</item>
+        <item name="colorSecondaryContainer">@color/orange_300</item>
+        <item name="colorOnSecondaryContainer">@color/black_900</item>
+
+        <item name="android:colorBackground">@color/black_900</item>
+        <item name="colorSurface">@color/black_800</item>
+        <item name="colorOnSurface">@color/grey_200</item>
+        <item name="colorOnSurfaceVariant">@color/grey_400</item>
+        <item name="colorOutline">@color/grey_800_translucent</item>
+
+        <item name="android:statusBarColor">@color/black_900</item>
+        <item name="android:windowLightStatusBar">false</item>
+
+        <item name="colorError">@color/colorError</item>
+        <item name="colorOnError">@color/colorOnError</item>
+        <item name="colorErrorContainer">@color/colorErrorContainer</item>
+        <item name="colorOnErrorContainer">@color/colorOnErrorContainer</item>
+    </style>
+
+    <style name="Theme.Gusto" parent="Base.Theme.Gusto" >
+        <item name="cursorColor">@color/colorPrimary</item>
+        <item name="cursorErrorColor">@color/colorError</item>
+        <item name="elevationOverlayEnabled">false</item>
+    </style>
+</resources>
