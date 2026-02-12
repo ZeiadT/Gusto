@@ -39,6 +39,14 @@ public class AuthRepository {
         return authFirebaseDatasource.anonymousSignIn();
     }
 
+    public Boolean isAnonymousUser(){
+        return authFirebaseDatasource.isAnonymousUser();
+    }
+
+    public Boolean isSignedIn() {
+        return authFirebaseDatasource.isSignedIn();
+    }
+
     public FirebaseUser getCurrentUser() {
         return authFirebaseDatasource.getCurrentUser();
     }

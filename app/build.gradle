@@ -45,8 +45,8 @@ dependencies {
     implementation libs.fragment
     implementation libs.motiontoast
     implementation libs.palette
-
     implementation libs.video.player.core
+    implementation libs.lottie
 
     implementation libs.room.runtime
     implementation libs.androidx.preference

@@ -5,16 +5,16 @@ import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.CheckBox;
-import android.widget.ImageButton;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 
 import iti.mad.gusto.R;
 import iti.mad.gusto.presentation.common.util.ImageUtil;
+import iti.mad.gusto.presentation.common.util.ThemeAwareIconToastWithVibration;
 
 public class FeaturedMealCard extends MaterialCardView {
 
@@ -80,8 +80,8 @@ public class FeaturedMealCard extends MaterialCardView {
         }
     }
 
-    public void setOnFavoriteClickListener(OnClickListener listener) {
-        btnFavorite.setOnClickListener(listener);
+    public void setOnFavoriteClickListener(CompoundButton.OnCheckedChangeListener listener) {
+        btnFavorite.setOnCheckedChangeListener(listener);
     }
 
     public void setOnAddClickListener(OnClickListener listener) {

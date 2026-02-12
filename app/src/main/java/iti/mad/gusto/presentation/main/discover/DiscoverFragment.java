@@ -10,9 +10,13 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ScrollView;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -27,6 +31,7 @@ import iti.mad.gusto.domain.entity.SearchTagEntity;
 import iti.mad.gusto.presentation.common.component.AddToPlanBottomSheet;
 import iti.mad.gusto.presentation.common.component.FeaturedMealCard;
 import iti.mad.gusto.presentation.common.util.ThemeAwareIconToast;
+import iti.mad.gusto.presentation.common.util.ThemeAwareIconToastWithVibration;
 import iti.mad.gusto.presentation.mealdetails.MealDetailsActivity;
 
 public class DiscoverFragment extends Fragment implements DiscoverContract.View {
@@ -36,11 +41,14 @@ public class DiscoverFragment extends Fragment implements DiscoverContract.View 
     CategoriesAdapter categoryAdapter;
     DiscoverContract.Presenter presenter;
 
+    ScrollView contentHolder;
+    View connectionLottie;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presenter = new DiscoverPresenter(requireContext(), this);
+        presenter.addConnectivityListener(requireContext());
     }
 
     @Override
@@ -55,6 +63,9 @@ public class DiscoverFragment extends Fragment implements DiscoverContract.View 
 
         cardDailySpecial = view.findViewById(R.id.cardDailySpecial);
         countriesGroup = view.findViewById(R.id.chipGroupCountries);
+        contentHolder = view.findViewById(R.id.contentHolder);
+        connectionLottie = view.findViewById(R.id.connectionLottie);
+
 
         categoryAdapter = new CategoriesAdapter(cat -> navigateToSearchWithTag(cat.toTag()));
 
@@ -66,8 +77,9 @@ public class DiscoverFragment extends Fragment implements DiscoverContract.View 
     @Override
     public void onStart() {
         super.onStart();
-        presenter.onViewCreated();
-        //todo add presenter logic for these click listeners
+        if (!presenter.isNetworkDisconnected(requireContext())) {
+            presenter.onViewCreated();
+        }
         cardDailySpecial.setOnClickListener(v -> {
             Intent intent = new Intent(requireContext(), MealDetailsActivity.class);
             intent.putExtra("mealId", cardDailySpecial.getMealId());
@@ -80,7 +92,10 @@ public class DiscoverFragment extends Fragment implements DiscoverContract.View 
                 presenter.onFeaturedMealAddToPlan(date, mealType);
             });
         });
-        cardDailySpecial.setOnFavoriteClickListener(v -> {
+        cardDailySpecial.setOnFavoriteClickListener((btn, isChecked) -> {
+            presenter.onFeaturedMealAddToFavourite();
+            Log.d("TAG", "onStart: setOnFavoriteClickListener " + isChecked);
+            Log.d("TAG", "onStart: setOnFavoriteClickListener " + btn.isChecked());
         });
     }
 
@@ -114,6 +129,39 @@ public class DiscoverFragment extends Fragment implements DiscoverContract.View 
     @Override
     public void showError(String errMsg) {
         ThemeAwareIconToast.error(requireContext(), errMsg);
+    }
+
+    @Override
+    public void showWarning(String msg) {
+        ThemeAwareIconToastWithVibration.warning(requireContext(), msg);
+    }
+
+    @Override
+    public void onNetworkDisconnected() {
+
+        Handler mainHandler = new Handler(Looper.getMainLooper());
+
+        mainHandler.post(() -> {
+            contentHolder.setVisibility(View.GONE);
+            connectionLottie.setVisibility(View.VISIBLE);
+
+        });
+    }
+
+    @Override
+    public void onNetworkReconnected() {
+
+        Handler mainHandler = new Handler(Looper.getMainLooper());
+
+        mainHandler.post(() -> {
+            if (contentHolder == null || connectionLottie == null || presenter == null)
+                return;
+            contentHolder.setVisibility(View.VISIBLE);
+            connectionLottie.setVisibility(View.GONE);
+            presenter.onViewCreated();
+
+
+        });
     }
 
     private void addCountryChip(CountryEntity country) {

@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -27,6 +29,7 @@ import iti.mad.gusto.R;
 import iti.mad.gusto.domain.entity.MealEntity;
 import iti.mad.gusto.domain.entity.SearchTagEntity;
 import iti.mad.gusto.presentation.common.util.ThemeAwareIconToast;
+import iti.mad.gusto.presentation.common.util.ThemeAwareIconToastWithVibration;
 import iti.mad.gusto.presentation.mealdetails.MealDetailsActivity;
 
 public class SearchFragment extends Fragment implements SearchContract.View {
@@ -39,6 +42,10 @@ public class SearchFragment extends Fragment implements SearchContract.View {
     SearchTagAdapter searchTagsAdapter;
     MealSearchAdapter mealSearchAdapter;
     SearchContract.Presenter presenter;
+
+    View connectionLottie;
+    View appBarLayout;
+    View emptyView;
 
 
     @Override
@@ -60,8 +67,12 @@ public class SearchFragment extends Fragment implements SearchContract.View {
         searchTagEditText = view.findViewById(R.id.tag_search_bar);
         searchMealEditText = view.findViewById(R.id.searchMealEditText);
         clearBtn = view.findViewById(R.id.clearBtn);
+        connectionLottie = view.findViewById(R.id.connectionLottie);
+        appBarLayout = view.findViewById(R.id.appBarLayout);
+        emptyView = view.findViewById(R.id.emptyView);
 
-        presenter = new SearchPresenter(this);
+
+        presenter = new SearchPresenter(requireContext(), this);
 
         initViews();
 
@@ -77,6 +88,8 @@ public class SearchFragment extends Fragment implements SearchContract.View {
                 presenter.onTagSelected(args.getSearchTag());
             }
         }
+
+        presenter.addConnectivityListener(requireContext());
     }
 
     @Override
@@ -141,7 +154,9 @@ public class SearchFragment extends Fragment implements SearchContract.View {
             }
 
             @Override
-            public void onFavoriteClick(MealEntity meal, boolean isFavorite) {/*todo implement add to favorite button*/}
+            public void onFavoriteClick(MealEntity meal, boolean isFavorite) {
+                presenter.onMealFavClicked(meal);
+            }
         });
 
 
@@ -152,6 +167,11 @@ public class SearchFragment extends Fragment implements SearchContract.View {
 
         mealsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         mealsRecyclerView.setAdapter(mealSearchAdapter);
+
+        if(mealSearchAdapter.getItemCount() == 0 && !presenter.isNetworkDisconnected(requireContext())){
+            emptyView.setVisibility(View.VISIBLE);
+            mealsRecyclerView.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -178,11 +198,50 @@ public class SearchFragment extends Fragment implements SearchContract.View {
 
     @Override
     public void showMeals(List<MealEntity> meals) {
+        if (meals.isEmpty()) {
+            emptyView.setVisibility(View.VISIBLE);
+            mealsRecyclerView.setVisibility(View.GONE);
+        } else {
+            emptyView.setVisibility(View.GONE);
+            mealsRecyclerView.setVisibility(View.VISIBLE);
+        }
         mealSearchAdapter.setList(meals);
     }
 
     @Override
     public void showError(String errMsg) {
         ThemeAwareIconToast.error(requireContext(), errMsg);
+    }
+
+    @Override
+    public void showWarning(String msg) {
+        ThemeAwareIconToastWithVibration.warning(requireContext(), msg);
+    }
+
+
+    @Override
+    public void onNetworkDisconnected() {
+
+        Handler mainHandler = new Handler(Looper.getMainLooper());
+
+        mainHandler.post(() -> {
+            mealsRecyclerView.setVisibility(View.GONE);
+            appBarLayout.setVisibility(View.GONE);
+            connectionLottie.setVisibility(View.VISIBLE);
+
+        });
+    }
+
+    @Override
+    public void onNetworkReconnected() {
+
+        Handler mainHandler = new Handler(Looper.getMainLooper());
+
+        mainHandler.post(() -> {
+            mealsRecyclerView.setVisibility(View.VISIBLE);
+            appBarLayout.setVisibility(View.VISIBLE);
+            connectionLottie.setVisibility(View.GONE);
+            presenter.searchForMeals(Objects.requireNonNull(searchMealEditText.getText()).toString());
+        });
     }
 }

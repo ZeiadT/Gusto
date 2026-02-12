@@ -15,7 +15,7 @@ public class SettingsLocalDatasource {
 
 
     private SettingsLocalDatasource(Context context) {
-        preferenceManager = SharedPreferenceManager.getInstance(context);
+        preferenceManager = SharedPreferenceManager.getInstance(context.getApplicationContext());
     }
 
     public static SettingsLocalDatasource getInstance(Context context) {

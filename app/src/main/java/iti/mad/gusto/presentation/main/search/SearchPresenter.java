@@ -1,5 +1,11 @@
 package iti.mad.gusto.presentation.main.search;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.Network;
+
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -8,15 +14,22 @@ import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.PublishSubject;
+import iti.mad.gusto.R;
+import iti.mad.gusto.core.managers.NetworkManager;
+import iti.mad.gusto.data.repo.AuthRepository;
+import iti.mad.gusto.data.repo.FavouriteRepository;
 import iti.mad.gusto.data.repo.MealRepository;
+import iti.mad.gusto.domain.entity.FavouriteMealEntity;
 import iti.mad.gusto.domain.entity.MealEntity;
 import iti.mad.gusto.domain.entity.SearchTagEntity;
 
 public class SearchPresenter implements SearchContract.Presenter {
     private final SearchContract.View view;
+    private final Context context;
     private final MealRepository mealRepository;
+    private final FavouriteRepository favouriteRepository;
+    private final AuthRepository authRepository;
     private final CompositeDisposable disposables = new CompositeDisposable();
 
 
@@ -27,9 +40,12 @@ public class SearchPresenter implements SearchContract.Presenter {
     private final PublishSubject<String> tagSearchSubject = PublishSubject.create();
     private final PublishSubject<String> mealSearchSubject = PublishSubject.create();
 
-    public SearchPresenter(SearchContract.View view) {
+    public SearchPresenter(Context context, SearchContract.View view) {
         this.view = view;
+        this.context = context;
         this.mealRepository = MealRepository.getInstance();
+        this.authRepository = AuthRepository.getInstance(context);
+        this.favouriteRepository = FavouriteRepository.getInstance(context);
         setupSearchSubjects();
     }
 
@@ -61,8 +77,6 @@ public class SearchPresenter implements SearchContract.Presenter {
         disposables.addAll(tagDisposable, mealDisposable);
     }
 
-    // --- Inputs from View ---
-
     @Override
     public void searchForTag(String query) {
         tagSearchSubject.onNext(query);
@@ -76,7 +90,7 @@ public class SearchPresenter implements SearchContract.Presenter {
 
     @Override
     public void onTagSelected(SearchTagEntity tag) {
-        for (SearchTagEntity exist: selectedTags) {
+        for (SearchTagEntity exist : selectedTags) {
             if (exist.getTagType() == tag.getTagType() && exist.getTagName().equals(tag.getTagName()))
                 return;
         }
@@ -104,6 +118,26 @@ public class SearchPresenter implements SearchContract.Presenter {
         if (meal != null && meal.getId() != null) {
             view.navigateToMealDetails(meal.getId());
         }
+    }
+
+    @Override
+    public void onMealFavClicked(MealEntity meal) {
+
+        if(authRepository.isAnonymousUser()){
+            String pleaseSignIn = context.getString(R.string.please_sign_in);
+            view.showWarning(pleaseSignIn);
+            return;
+        }
+
+        Disposable dd = favouriteRepository.addFavourite(new FavouriteMealEntity(meal.getId(), meal.getName(), meal.getImage(), meal.getCategory(), meal.getArea()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        () -> {
+                        },
+                        t -> view.showError(t.getMessage())
+                );
+
+        disposables.add(dd);
     }
 
     @Override
@@ -139,6 +173,34 @@ public class SearchPresenter implements SearchContract.Presenter {
                 );
         disposables.add(d);
     }
+
+
+    @Override
+    public void addConnectivityListener(Context context) {
+        if (NetworkManager.isNetworkDisconnected(context)){
+            view.onNetworkDisconnected();
+        }
+
+        NetworkManager.addConnectivityListener(context, new ConnectivityManager.NetworkCallback() {
+            @Override
+            public void onAvailable(@NonNull Network network) {
+                super.onAvailable(network);
+                view.onNetworkReconnected();
+            }
+
+            @Override
+            public void onLost(@NonNull Network network) {
+                super.onLost(network);
+                view.onNetworkDisconnected();
+            }
+        });
+    }
+
+    @Override
+    public boolean isNetworkDisconnected(Context context) {
+        return NetworkManager.isNetworkDisconnected(context);
+    }
+
 
     @Override
     public void onDetach() {

@@ -6,7 +6,7 @@ import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
 
-public class VibrationManager {
+public abstract class VibrationManager {
     private static final String TAG = "Vibrator";
 
     public static void vibrate(Context context, int duration){

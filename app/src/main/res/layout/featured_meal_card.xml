@@ -36,6 +36,7 @@
             android:layout_marginEnd="16dp"
             android:background="@drawable/bg_circle"
             android:button="@drawable/bookmark"
+
             app:buttonTint="@color/colorSecondary"
             android:padding="8dp"
             android:elevation="4dp"

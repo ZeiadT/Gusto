@@ -1,9 +1,13 @@
 package iti.mad.gusto.presentation.mealdetails;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,11 +21,16 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 
+import java.util.List;
+import java.util.Objects;
+
 import iti.mad.gusto.R;
+import iti.mad.gusto.domain.entity.InstructionEntity;
 import iti.mad.gusto.domain.entity.MealEntity;
 import iti.mad.gusto.presentation.common.component.AddToPlanBottomSheet;
 import iti.mad.gusto.presentation.common.util.ImageUtil;
 import iti.mad.gusto.presentation.common.util.ThemeAwareIconToast;
+import iti.mad.gusto.presentation.common.util.ThemeAwareIconToastWithVibration;
 
 public class MealDetailsActivity extends AppCompatActivity implements MealDetailsContract.View {
     private YouTubePlayerView youTubePlayerView;
@@ -37,6 +46,9 @@ public class MealDetailsActivity extends AppCompatActivity implements MealDetail
     private FloatingActionButton addToPlanButton;
     private CheckBox favoriteCheckBox;
     private ImageButton backButton;
+    View contentHolder;
+    View connectionLottie;
+    View appBarLayout;
 
 
     MealDetailsContract.Presenter presenter;
@@ -64,6 +76,11 @@ public class MealDetailsActivity extends AppCompatActivity implements MealDetail
 
         mealInstructionsTextView = findViewById(R.id.instructions_desc);
 
+        contentHolder = findViewById(R.id.contentHolder);
+        connectionLottie = findViewById(R.id.connectionLottie);
+        appBarLayout = findViewById(R.id.appBarLayout);
+
+
         initIngredientsRecyclerView();
 
         presenter = new MealDetailsPresenter(this, this);
@@ -82,6 +99,15 @@ public class MealDetailsActivity extends AppCompatActivity implements MealDetail
                 presenter.onFeaturedMealAddToPlan(date, mealType);
             });
         });
+
+        favoriteCheckBox.setOnClickListener(v -> {
+            if (favoriteCheckBox.isChecked()) {
+                presenter.onFavoriteClicked();
+            }
+
+        });
+
+        presenter.addConnectivityListener(this);
     }
 
     void initIngredientsRecyclerView() {
@@ -98,10 +124,13 @@ public class MealDetailsActivity extends AppCompatActivity implements MealDetail
 
     @Override
     public void showMealDetails(MealEntity meal) {
+        if (meal == null || isDestroyed()) {
+            return;
+        }
         mealTitleTextView.setText(meal.getName());
         mealCategoryTextView.setText(meal.getCategory());
         mealCountryTextView.setText(meal.getArea());
-        mealInstructionsTextView.setText(meal.getInstructions().get(0).getStep());
+        mealInstructionsTextView.setText(buildInstructions(meal.getInstructions()));
         ingredientAdapter.setIngredients(meal.getIngredients());
         String itemsLocalized = getString(R.string.items);
         mealIngredientsTextView.setText(meal.getIngredients().size() + " " + itemsLocalized);
@@ -123,6 +152,11 @@ public class MealDetailsActivity extends AppCompatActivity implements MealDetail
     }
 
     @Override
+    public void showWarning(String message) {
+        ThemeAwareIconToastWithVibration.warning(this, message);
+    }
+
+    @Override
     public void showLoading() {
 
     }
@@ -131,4 +165,45 @@ public class MealDetailsActivity extends AppCompatActivity implements MealDetail
     public void hideLoading() {
 
     }
+
+
+    @Override
+    public void onNetworkDisconnected() {
+
+        Handler mainHandler = new Handler(Looper.getMainLooper());
+
+        mainHandler.post(() -> {
+            contentHolder.setVisibility(View.GONE);
+            appBarLayout.setVisibility(View.GONE);
+            addToPlanButton.setVisibility(View.GONE);
+            connectionLottie.setVisibility(View.VISIBLE);
+
+        });
+    }
+
+    @Override
+    public void onNetworkReconnected() {
+
+        Handler mainHandler = new Handler(Looper.getMainLooper());
+
+        mainHandler.post(() -> {
+            contentHolder.setVisibility(View.VISIBLE);
+            appBarLayout.setVisibility(View.VISIBLE);
+            addToPlanButton.setVisibility(View.VISIBLE);
+            connectionLottie.setVisibility(View.GONE);
+            presenter.getMealDetails(Objects.requireNonNull(getIntent().getExtras()).getString("mealId"));
+        });
+    }
+
+    private String buildInstructions(List<InstructionEntity> instructions) {
+        StringBuilder sb = new StringBuilder();
+
+        for (InstructionEntity instruction : instructions) {
+            sb.append(instruction.getStep());
+            sb.append("\n\n");
+        }
+
+        return sb.toString();
+    }
+
 }

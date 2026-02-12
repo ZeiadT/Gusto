@@ -35,9 +35,9 @@ public class AuthFirebaseDatasource {
     private final FirebaseAuth mAuth;
     private final CredentialManager credentialManager;
 
-    private AuthFirebaseDatasource(Context applicationContext) {
+    private AuthFirebaseDatasource(Context context) {
         mAuth = FirebaseAuth.getInstance();
-        credentialManager = CredentialManager.create(applicationContext);
+        credentialManager = CredentialManager.create(context.getApplicationContext());
     }
 
     private static AuthFirebaseDatasource instance;
@@ -128,6 +128,17 @@ public class AuthFirebaseDatasource {
                         })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Boolean isAnonymousUser(){
+        if (getCurrentUser() != null){
+            return getCurrentUser().isAnonymous();
+        }
+        return true;
+    }
+
+    public Boolean isSignedIn() {
+        return getCurrentUser() != null;
     }
 
     public FirebaseUser getCurrentUser() {

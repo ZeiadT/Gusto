@@ -5,6 +5,7 @@ import static com.google.android.material.navigation.NavigationBarView.LABEL_VIS
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -43,13 +44,32 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
         setupNavigation();
 
-        presenter = new MainPresenter(this);
+        presenter = new MainPresenter(this, this);
+
+        if (presenter.isGuestUser()) {
+            hideRestrictedMenuItems();
+        }
+
         presenter.onViewCreated(savedInstanceState != null);
 
         bottomNavigationView.setOnItemSelectedListener(item ->
                 presenter.onBottomNavItemSelected(item.getItemId(), getNavPositionFromId(item.getItemId())
                         , bottomNavigationView.getSelectedItemId(), getNavPositionFromId(bottomNavigationView.getSelectedItemId()))
         );
+    }
+
+    private void hideRestrictedMenuItems() {
+        Menu menu = bottomNavigationView.getMenu();
+
+        MenuItem favoritesItem = menu.findItem(R.id.favouriteFragment);
+        MenuItem planItem = menu.findItem(R.id.planFragment);
+
+        if (favoritesItem != null) {
+            favoritesItem.setVisible(false);
+        }
+        if (planItem != null) {
+            planItem.setVisible(false);
+        }
     }
 
     private void setupNavigation() {

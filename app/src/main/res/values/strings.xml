@@ -41,8 +41,6 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="start_your_culinary_journey">Start your culinary journey</string>
     <string name="join_gusto">Join Gusto</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="discover">Discover</string>
     <string name="favourites">Favourites</string>
     <string name="my_meals">My Meals</string>
@@ -70,4 +68,11 @@
     <string name="meal_type">Meal Type</string>
     <string name="cancel">Cancel</string>
     <string name="confirm">Confirm</string>
+    <string name="please_sign_in">Please Sign-in to use this feature :)</string>
+    <string name="lost_in_space_no_data_found">Lost in space. (No data found)</string>
+    <string name="lost_in_space_no_plans_found">Lost in space. (No Plans found)</string>
+    <string name="lost_in_space_no_favourites_found">Lost in space. (No Favourites found)</string>
+    <string name="system_default">System Default</string>
+    <string name="light">Light</string>
+    <string name="dark">Dark</string>
 </resources>

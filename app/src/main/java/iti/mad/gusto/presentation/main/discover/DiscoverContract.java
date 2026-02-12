@@ -1,5 +1,7 @@
 package iti.mad.gusto.presentation.main.discover;
 
+import android.content.Context;
+
 import java.util.List;
 
 import iti.mad.gusto.domain.entity.CategoryEntity;
@@ -13,6 +15,9 @@ public interface DiscoverContract {
         void setCategories(List<CategoryEntity> categories);
         void setCountries(List<CountryEntity> countries);
         void showError(String errMsg);
+        void showWarning(String msg);
+        void onNetworkDisconnected();
+        void onNetworkReconnected();
     }
 
     interface Presenter {
@@ -22,7 +27,9 @@ public interface DiscoverContract {
         void getCountries();
         void onTagClicked(CategoryEntity category);
         void onFeaturedMealAddToPlan(String date, MealType type);
-        void onFeaturedMealAddToFavourite(MealEntity meal);
+        void onFeaturedMealAddToFavourite();
+        void addConnectivityListener(Context context);
+        boolean isNetworkDisconnected(Context context);
         void onDetach();
 
     }

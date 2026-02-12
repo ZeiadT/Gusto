@@ -14,6 +14,7 @@ fragment = "1.8.9"
 cardview = "1.0.0"
 palette = "1.0.0"
 navigation = "2.9.7"
+lottie = "6.7.1"
 
 video-player-core = "13.0.0"
 
@@ -47,6 +48,7 @@ motiontoast = { module = "com.github.Spikeysanju:MotionToast", version.ref = "mo
 recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
 fragment = { group = "androidx.fragment", name = "fragment", version.ref = "fragment" }
 palette = {group = "androidx.palette", name = "palette", version.ref="palette"}
+lottie = {group = "com.airbnb.android", name = "lottie", version.ref = "lottie"}
 
 retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }

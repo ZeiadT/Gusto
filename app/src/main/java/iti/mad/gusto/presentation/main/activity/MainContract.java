@@ -10,5 +10,7 @@ public interface MainContract {
     interface Presenter {
         void onViewCreated(boolean isRecreation);
         boolean onBottomNavItemSelected(int newItemId, int newItemOrder, int currentItemId, int currentItemOrder);
+
+        boolean isGuestUser();
     }
 }

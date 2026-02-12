@@ -16,7 +16,6 @@ import androidx.credentials.GetCredentialResponse;
 import androidx.credentials.exceptions.GetCredentialException;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.os.CancellationSignal;
@@ -31,7 +30,6 @@ import iti.mad.gusto.R;
 import iti.mad.gusto.presentation.auth.activity.AuthActivityCommunicator;
 import iti.mad.gusto.presentation.common.component.PrimaryLoadableButton;
 import iti.mad.gusto.presentation.common.component.SecondaryIconButton;
-import iti.mad.gusto.presentation.common.util.ThemeAwareIconToast;
 import iti.mad.gusto.presentation.common.util.ThemeAwareIconToastWithVibration;
 import iti.mad.gusto.presentation.main.activity.MainActivity;
 
