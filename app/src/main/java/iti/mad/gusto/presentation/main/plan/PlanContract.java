@@ -1,21 +1,23 @@
 package iti.mad.gusto.presentation.main.plan;
 
 import java.util.List;
-
 import iti.mad.gusto.domain.entity.PlanMealEntity;
 
 public interface PlanContract {
     interface View {
         void showMeals(List<PlanMealEntity> plannedMeals);
-        void showMealDetails(String mealId);
+        void showEmptyState();
+        void hideEmptyState();
         void showError(String message);
+        void navigateToMealDetails(String mealId);
+        void removeMealFromAdapter(int position);
     }
 
     interface Presenter {
-        void getMealsByDate(String date);
-        void addMeal(PlanMealEntity meal);
-        void deletePlan(PlanMealEntity meal);
-        void onDateChanged(String newDate);
-        void onDetach();
+        void getMealsForToday();
+        void getMealsByDate(int year, int month, int day);
+        void deleteMeal(PlanMealEntity meal, int position);
+        void onMealClicked(PlanMealEntity meal);
+        void onDestroy();
     }
 }

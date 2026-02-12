@@ -2,23 +2,22 @@ package iti.mad.gusto.presentation.main.plan;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 
-import java.util.Calendar;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.List;
 
 import iti.mad.gusto.R;
+import iti.mad.gusto.data.repo.PlanRepository;
 import iti.mad.gusto.domain.entity.PlanMealEntity;
 import iti.mad.gusto.presentation.common.util.ThemeAwareIconToast;
 import iti.mad.gusto.presentation.mealdetails.MealDetailsActivity;
@@ -26,13 +25,10 @@ import iti.mad.gusto.presentation.mealdetails.MealDetailsActivity;
 public class PlanFragment extends Fragment implements PlanContract.View {
 
     private DatePicker spinnerDatePicker;
+    private View emptyView;
+    private RecyclerView planRecyclerView;
     private PlanPresenter presenter;
-    PlanAdapter adapter;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+    private PlanAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,41 +39,62 @@ public class PlanFragment extends Fragment implements PlanContract.View {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        presenter = new PlanPresenter(requireContext(), this);
+
+        presenter = new PlanPresenter(this, requireContext());
+
+        initViews(view);
+        setupRecyclerView();
+        setupDatePicker();
+
+        presenter.getMealsForToday();
+    }
+
+    private void initViews(View view) {
         spinnerDatePicker = view.findViewById(R.id.datePicker);
+        emptyView = view.findViewById(R.id.emptyView);
+        planRecyclerView = view.findViewById(R.id.recyclerViewPlan);
+    }
 
-        RecyclerView rv = view.findViewById(R.id.recyclerViewPlan);
-        rv.setLayoutManager(new LinearLayoutManager(requireContext()));
+    private void setupRecyclerView() {
+        planRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        adapter = new PlanAdapter(meal -> {
-            navigateToDetails(meal.getId());
-        });
+        adapter = new PlanAdapter(meal -> presenter.onMealClicked(meal));
+        planRecyclerView.setAdapter(adapter);
 
-        rv.setAdapter(adapter);
+        setupSwipeToDelete();
+    }
 
-        Calendar calendar = Calendar.getInstance();
-        int currentYear = calendar.get(Calendar.YEAR);
-        int currentMonth = calendar.get(Calendar.MONTH);
-        int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
-
-        String currentDayString = currentDay < 10 ? "0" + currentDay : String.valueOf(currentDay);
-        String currentMonthString = (currentMonth + 1) < 10 ? "0" + (currentMonth + 1) : String.valueOf(currentMonth + 1);
-
-        String currentDate = currentDayString + "/" + currentMonthString + "/" + currentYear;
-        Log.d("TAG", "onViewCreated: fetched meals for date " + currentDate);
-
-        presenter.getMealsByDate(currentDate);
-
-        spinnerDatePicker.init(currentYear, currentMonth, currentDay, (datePicker, year, monthOfYear, dayOfMonth) -> {
-            String DayString = dayOfMonth < 10 ? "0" + dayOfMonth : String.valueOf(dayOfMonth);
-            String MonthString = (monthOfYear + 1) < 10 ? "0" + (monthOfYear + 1) : String.valueOf(monthOfYear + 1);
-
-            String date = DayString + "/" + MonthString + "/" + year;
-
-            presenter.getMealsByDate(date);
-            Log.d("TAG", "onViewCreated: fetched meals for date " + date);
-        });
+    private void setupDatePicker() {
         spinnerDatePicker.setMinDate(System.currentTimeMillis());
+
+        spinnerDatePicker.init(
+                spinnerDatePicker.getYear(),
+                spinnerDatePicker.getMonth(),
+                spinnerDatePicker.getDayOfMonth(),
+                (view, year, monthOfYear, dayOfMonth) ->
+                        presenter.getMealsByDate(year, monthOfYear, dayOfMonth)
+        );
+    }
+
+    private void setupSwipeToDelete() {
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback =
+                new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+
+                    @Override
+                    public boolean onMove(@NonNull RecyclerView rv, @NonNull RecyclerView.ViewHolder vh, @NonNull RecyclerView.ViewHolder target) {
+                        return false;
+                    }
+
+                    @Override
+                    public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                        int position = viewHolder.getBindingAdapterPosition();
+                        PlanMealEntity meal = adapter.getByPosition(position);
+
+                        presenter.deleteMeal(meal, position);
+                    }
+                };
+
+        new ItemTouchHelper(simpleItemTouchCallback).attachToRecyclerView(planRecyclerView);
     }
 
     @Override
@@ -86,10 +103,31 @@ public class PlanFragment extends Fragment implements PlanContract.View {
     }
 
     @Override
-    public void showMealDetails(String mealId) {
+    public void showEmptyState() {
+        emptyView.setVisibility(View.VISIBLE);
+        planRecyclerView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void hideEmptyState() {
+        emptyView.setVisibility(View.GONE);
+        planRecyclerView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void navigateToMealDetails(String mealId) {
         Intent intent = new Intent(requireContext(), MealDetailsActivity.class);
         intent.putExtra("mealId", mealId);
         startActivity(intent);
+    }
+
+    @Override
+    public void removeMealFromAdapter(int position) {
+        adapter.removeByPosition(position);
+
+        if (adapter.getItemCount() == 0) {
+            showEmptyState();
+        }
     }
 
     @Override
@@ -97,10 +135,9 @@ public class PlanFragment extends Fragment implements PlanContract.View {
         ThemeAwareIconToast.error(requireContext(), message);
     }
 
-    private void navigateToDetails(String mealId){
-        Intent intent = new Intent(requireContext(), MealDetailsActivity.class);
-        intent.putExtra("mealId", mealId);
-        startActivity(intent);
-
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.onDestroy();
     }
 }

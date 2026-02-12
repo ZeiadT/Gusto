@@ -1,4 +1,5 @@
 package iti.mad.gusto.presentation.common.component;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +8,8 @@ import android.widget.ArrayAdapter;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.android.material.datepicker.CalendarConstraints;
+import com.google.android.material.datepicker.DateValidatorPointForward;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -18,7 +21,7 @@ import iti.mad.gusto.domain.entity.MealType;
 
 public class AddToPlanBottomSheet extends BottomSheetDialogFragment {
     private OnConfirmListener onConfirmListener;
-    private Date selectedDate ;
+    private Date selectedDate;
     private MealType selectedMealType = MealType.BREAKFAST;
     private final MealType[] mealTypes = {MealType.BREAKFAST, MealType.LUNCH, MealType.DINNER, MealType.SNACK};
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
@@ -61,9 +64,14 @@ public class AddToPlanBottomSheet extends BottomSheetDialogFragment {
     }
 
     private void showDatePicker() {
+        long today = MaterialDatePicker.todayInUtcMilliseconds();
+        CalendarConstraints.Builder constraintsBuilder = new CalendarConstraints.Builder();
+        constraintsBuilder.setValidator(DateValidatorPointForward.from(today));
+
         MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker()
                 .setTitleText("Select date")
-                .setSelection(dateFormat.getCalendar().getTimeInMillis())
+                .setSelection(selectedDate.getTime())
+                .setCalendarConstraints(constraintsBuilder.build())
                 .build();
 
         datePicker.addOnPositiveButtonClickListener(selection -> {

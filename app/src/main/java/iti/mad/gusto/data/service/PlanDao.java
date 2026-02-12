@@ -1,4 +1,4 @@
-package iti.mad.gusto.core.storage;
+package iti.mad.gusto.data.service;
 
 import androidx.room.Dao;
 import androidx.room.Delete;
@@ -22,4 +22,8 @@ public interface PlanDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     Completable addPlan(PlanMealEntity plan);
+
+
+    @Query("DELETE FROM plans")
+    Completable dropPlanMeals();
 }

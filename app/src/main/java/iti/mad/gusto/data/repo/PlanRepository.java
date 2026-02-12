@@ -35,4 +35,7 @@ public class PlanRepository {
     public Completable addPlan(PlanMealEntity plan) {
         return localDatasource.addPlan(plan);
     }
+    public Completable dropPlanMeals() {
+        return localDatasource.dropPlanMeals();
+    }
 }

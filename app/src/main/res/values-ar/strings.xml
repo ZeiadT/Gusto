@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Gusto</string>
+    <string name="slogan">اطبخ بمتعة</string>
+    <string name="next">التالي</string>
+    <string name="join_now">انضم الآن</string>
+
+    <string name="onboarding_title_plan">خطط لأسبوعك المثالي</string>
+    <string name="onboarding_desc_plan">حوّل تخطيط الوجبات إلى متعة مع وصفات مخصصة لك.</string>
+    <string name="onboarding_title_discover">اكتشف مطابخ جديدة</string>
+    <string name="onboarding_desc_discover">تصفح آلاف الوصفات المميزة المصممة حسب ذوقك.</string>
+    <string name="onboarding_title_save">لا تفقد أي نكهة</string>
+    <string name="onboarding_desc_save">احفظ وصفاتك المفضلة بلمسة واحدة وأنشئ مجموعات مخصصة.</string>
+
+    <string name="welcome_back">مرحباً بعودتك</string>
+    <string name="login_to_your_gusto_account">سجّل الدخول إلى حساب Gusto الخاص بك</string>
+    <string name="email">البريد الإلكتروني</string>
+    <string name="password">كلمة المرور</string>
+    <string name="enter_your_password">أدخل كلمة المرور</string>
+    <string name="gusto_example_com">gusto@example.com</string>
+    <string name="sign_in">تسجيل الدخول</string>
+    <string name="sign_up">إنشاء حساب</string>
+    <string name="dont_have_an_account">ليس لديك حساب؟</string>
+    <string name="login">تسجيل الدخول</string>
+    <string name="register">إنشاء حساب</string>
+    <string name="please_wait">يرجى الانتظار…</string>
+    <string name="or">أو</string>
+    <string name="remember_me">تذكرني</string>
+    <string name="forgot_password">هل نسيت كلمة المرور؟</string>
+    <string name="join_as_guest">الدخول كضيف</string>
+    <string name="soon">قريباً…</string>
+    <string name="coming_soon">قريباً…</string>
+    <string name="google">جوجل</string>
+
+    <string name="error">خطأ</string>
+    <string name="success">تم بنجاح</string>
+    <string name="warning">تحذير</string>
+    <string name="info">معلومة</string>
+
+    <string name="invalid_email">بريد إلكتروني غير صالح، مثال صحيح: gusto@example.com</string>
+    <string name="invalid_password">يجب أن تحتوي كلمة المرور على 6 أحرف على الأقل، وتتضمن حرفاً ورقماً ورمزاً خاصاً.</string>
+    <string name="passwords_mismatch">كلمة المرور وتأكيد كلمة المرور غير متطابقين</string>
+    <string name="already_have_an_account">لديك حساب بالفعل؟</string>
+    <string name="confirm_password">تأكيد كلمة المرور</string>
+
+    <string name="start_your_culinary_journey">ابدأ رحلتك في عالم الطهي</string>
+    <string name="join_gusto">انضم إلى Gusto</string>
+
+    <string name="discover">اكتشف</string>
+    <string name="favourites">المفضلة</string>
+    <string name="my_meals">وجباتي</string>
+    <string name="settings">الإعدادات</string>
+    <string name="search">بحث</string>
+    <string name="add_to_plan">أضف إلى الخطة</string>
+    <string name="featured">مميز</string>
+    <string name="today_s_suggested_categories">الفئات المقترحة اليوم</string>
+    <string name="category_image">صورة الفئة</string>
+    <string name="popular_countries">الدول الشائعة</string>
+    <string name="add_tags_e_g_beef">أضف وسوم (مثال: #لحم)</string>
+    <string name="search_meals_e_g_pesto_pasta">ابحث عن وجبات (مثال: باستا بالبيستو)</string>
+    <string name="clear">مسح</string>
+
+    <string name="ingredients">المكونات</string>
+    <string name="instructions">طريقة التحضير</string>
+    <string name="add_meal">إضافة وجبة</string>
+    <string name="add">إضافة</string>
+    <string name="items">عناصر</string>
+
+    <string name="breakfast">الإفطار</string>
+    <string name="_8_00_am">٨:٠٠ ص</string>
+    <string name="_7_30_pm">٧:٣٠ م</string>
+    <string name="dinner">العشاء</string>
+    <string name="no_meal_scheduled">لا توجد وجبة مجدولة</string>
+    <string name="date">التاريخ</string>
+    <string name="meal_type">نوع الوجبة</string>
+    <string name="cancel">إلغاء</string>
+    <string name="confirm">تأكيد</string>
+
+    <string name="please_sign_in">يرجى تسجيل الدخول لاستخدام هذه الميزة :)</string>
+    <string name="lost_in_space_no_data_found">تائه في الفضاء. (لم يتم العثور على بيانات)</string>
+    <string name="lost_in_space_no_plans_found">تائه في الفضاء. (لم يتم العثور على خطط)</string>
+    <string name="lost_in_space_no_favourites_found">تائه في الفضاء. (لم يتم العثور على مفضلات)</string>
+    <string name="system_default">افتراضي النظام</string>
+    <string name="light">فاتح</string>
+    <string name="dark">داكن</string>
+
+</resources>

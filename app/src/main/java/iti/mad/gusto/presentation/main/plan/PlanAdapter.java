@@ -60,6 +60,13 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.PlanViewHolder
         this.plans = newPlans;
         notifyDataSetChanged();
     }
+    public PlanMealEntity getByPosition(int position) {
+        return this.plans.get(position);
+    }
+    public void removeByPosition(int position) {
+        this.plans.remove(position);
+        notifyDataSetChanged();
+    }
 
     public class PlanViewHolder extends RecyclerView.ViewHolder {
         TextView tvHeader, tvTitle, tvTag, tvCountry;

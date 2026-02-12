@@ -6,6 +6,8 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
+import iti.mad.gusto.data.service.FavouriteDao;
+import iti.mad.gusto.data.service.PlanDao;
 import iti.mad.gusto.domain.entity.FavouriteMealEntity;
 import iti.mad.gusto.domain.entity.PlanMealEntity;
 
