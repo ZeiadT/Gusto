@@ -16,26 +16,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Gusto">
-
         <activity
-            android:name=".presentation.auth.activity.AuthActivity"
-            android:exported="true" >
+            android:name=".presentation.splash.SplashActivity"
+            android:exported="true">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
-
         </activity>
 
         <activity
+            android:name=".presentation.auth.activity.AuthActivity"
+            android:exported="false" />
+        <activity
             android:name=".presentation.main.activity.MainActivity"
-            android:exported="false">
-
-        </activity>
-
+            android:exported="false" />
         <activity
             android:name=".presentation.mealdetails.MealDetailsActivity"
             android:exported="false" />

@@ -8,6 +8,7 @@ import iti.mad.gusto.domain.entity.MealType;
 public interface MealDetailsContract {
     interface View {
         void showMealDetails(MealEntity meal);
+        void setFavouriteIcon(boolean isFavourite);
 
         void showError(String message);
 
@@ -27,9 +28,11 @@ public interface MealDetailsContract {
 
         void onFeaturedMealAddToPlan(String date, MealType type);
 
-        void onFavoriteClicked();
+        void onFavoriteClicked(boolean isFavorite);
 
         void addConnectivityListener(Context context);
+
+        void removeConnectivityListener(Context context);
 
         void onDetach();
 

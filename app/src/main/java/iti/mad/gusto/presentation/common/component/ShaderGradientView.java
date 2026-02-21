@@ -41,43 +41,26 @@ public class ShaderGradientView extends GLSurfaceView implements GLSurfaceView.R
             "precision highp float;" +
                     "uniform vec2 uResolution;" +
                     "uniform float uTime;" +
-
                     "void main() {" +
-                    // 1. Setup the 320x200 Retro Board
-                    // We map the actual screen pixels (gl_FragCoord) to a tiny 320x200 grid
                     "    vec2 targetRes = vec2(320.0, 200.0);" +
                     "    vec2 uv = floor(gl_FragCoord.xy * (targetRes / uResolution.xy)) / targetRes;" +
-
-                    // Time variable for animation speed
                     "    float t = uTime * 1.5;" +
-
-                    // 2. Define Animated Corner Colors
-                    // Top-Left: Lighter Mint (High Brightness)
-                    "    vec3 colTopLeft = vec3(0.15 + 0.05*sin(t)," +
-                    "                           0.65 + 0.1*sin(t * 0.7)," +
-                    "                           0.40 + 0.05*cos(t));" +
-
-                    // Top-Right: The Primary Color #1E8F57 (Pure)
-                    "    vec3 colTopRight = vec3(0.12," +
-                    "                            0.56 + 0.05*cos(t * 0.8)," +
-                    "                            0.34 + 0.05*sin(t * 0.5));" +
-
-                    // Bottom-Left: Deep Forest Green (Darker Shade)
-                    "    vec3 colBotLeft = vec3(0.05 + 0.02*sin(t * 1.1)," +
-                    "                           0.30 + 0.1*cos(t * 0.3)," +
-                    "                           0.18 + 0.05*sin(t * 0.9));" +
-
-                    // Bottom-Right: Cool Emerald (Slightly Blue-ish)
-                    "    vec3 colBotRight = vec3(0.10 * sin(t * 0.6)," +
-                    "                            0.50 + 0.1*cos(t * 1.2)," +
-                    "                            0.45 + 0.1*sin(t));" +
-
-                    // 3. Bilinear Interpolation
+                    "    vec3 colTopLeft = vec3(0.35 + 0.1*sin(t)," +
+                    "                           0.85 + 0.1*sin(t * 0.7)," +
+                    "                           0.55 + 0.1*cos(t));" +
+                    "    vec3 colTopRight = vec3(0.118," +
+                    "                            0.561 + 0.05*cos(t * 0.8)," +
+                    "                            0.341 + 0.05*sin(t * 0.5));" +
+                    "    vec3 colBotLeft = vec3(0.0," +
+                    "                           0.08 + 0.05*cos(t * 0.3)," +
+                    "                           0.04 + 0.03*sin(t * 0.9));" +
+                    "    vec3 colBotRight = vec3(0.02 * sin(t * 0.6)," +
+                    "                            0.20 + 0.1*cos(t * 1.2)," +
+                    "                            0.35 + 0.1*sin(t));" +
                     "    vec3 topMix = mix(colTopLeft, colTopRight, uv.x);" +
                     "    vec3 botMix = mix(colBotLeft, colBotRight, uv.x);" +
                     "    vec3 finalColor = mix(botMix, topMix, uv.y);" +
-
-                    // 4. Output
+                    "    finalColor = smoothstep(0.0, 1.0, finalColor);" +
                     "    gl_FragColor = vec4(finalColor, 1.0);" +
                     "}";
 

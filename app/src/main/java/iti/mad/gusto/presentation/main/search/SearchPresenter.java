@@ -1,13 +1,21 @@
 package iti.mad.gusto.presentation.main.search;
 
+import static androidx.core.content.ContextCompat.getSystemService;
+
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.Network;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.NonNull;
 
+import android.util.Pair;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -39,6 +47,7 @@ public class SearchPresenter implements SearchContract.Presenter {
 
     private final PublishSubject<String> tagSearchSubject = PublishSubject.create();
     private final PublishSubject<String> mealSearchSubject = PublishSubject.create();
+    private ConnectivityManager.NetworkCallback connectivityListenerCallback;
 
     public SearchPresenter(Context context, SearchContract.View view) {
         this.view = view;
@@ -62,15 +71,17 @@ public class SearchPresenter implements SearchContract.Presenter {
                         error -> view.showError(error.getMessage())
                 );
 
-        // Meal Search Stream
+        // Meal Search Stream: fetch meals then favourite IDs from DB and show
         Disposable mealDisposable = mealSearchSubject
                 .debounce(500, TimeUnit.MILLISECONDS)
                 .distinctUntilChanged()
                 .switchMap(query -> mealRepository.searchByNameAndTags(query, selectedTags)
-                        .onErrorResumeNext(t -> Observable.empty()))
+                        .onErrorResumeNext(t -> Observable.empty())
+                        .flatMapSingle(meals -> favouriteRepository.getFavouriteIds()
+                                .map(ids -> new Pair<>(meals, ids))))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        view::showMeals,
+                        pair -> view.showMeals(pair.first, pair.second),
                         error -> view.showError(error.getMessage())
                 );
 
@@ -121,23 +132,42 @@ public class SearchPresenter implements SearchContract.Presenter {
     }
 
     @Override
-    public void onMealFavClicked(MealEntity meal) {
-
-        if(authRepository.isAnonymousUser()){
+    public void onMealFavClicked(MealEntity meal, boolean isFavorite) {
+        if (authRepository.isAnonymousUser()) {
             String pleaseSignIn = context.getString(R.string.please_sign_in);
             view.showWarning(pleaseSignIn);
             return;
         }
 
-        Disposable dd = favouriteRepository.addFavourite(new FavouriteMealEntity(meal.getId(), meal.getName(), meal.getImage(), meal.getCategory(), meal.getArea()))
+        FavouriteMealEntity entity = new FavouriteMealEntity(meal.getId(), meal.getName(), meal.getImage(), meal.getCategory(), meal.getArea());
+        Disposable d = (isFavorite
+                ? favouriteRepository.addFavourite(entity)
+                : favouriteRepository.deleteFavouriteById(entity))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         () -> {
+                            Disposable refresh = favouriteRepository.getFavouriteIds()
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(
+                                            view::refreshFavouriteStates,
+                                            t -> view.showError(t.getMessage())
+                                    );
+                            disposables.add(refresh);
                         },
                         t -> view.showError(t.getMessage())
                 );
+        disposables.add(d);
+    }
 
-        disposables.add(dd);
+    @Override
+    public void refreshFavouriteStates() {
+        Disposable d = favouriteRepository.getFavouriteIds()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        view::refreshFavouriteStates,
+                        t -> view.showError(t.getMessage())
+                );
+        disposables.add(d);
     }
 
     @Override
@@ -153,7 +183,13 @@ public class SearchPresenter implements SearchContract.Presenter {
         }
 
         if (meals != null && !meals.isEmpty()) {
-            view.showMeals(meals);
+            Disposable d = favouriteRepository.getFavouriteIds()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            ids -> view.showMeals(meals, ids),
+                            t -> view.showMeals(meals, Collections.emptySet())
+                    );
+            disposables.add(d);
         } else {
             searchForMeals(currentMealQuery);
         }
@@ -166,9 +202,11 @@ public class SearchPresenter implements SearchContract.Presenter {
 
     private void forceSearchForMeals() {
         Disposable d = mealRepository.searchByNameAndTags(currentMealQuery, selectedTags)
+                .flatMapSingle(meals -> favouriteRepository.getFavouriteIds()
+                        .map(ids -> new Pair<>(meals, ids)))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        view::showMeals,
+                        pair -> view.showMeals(pair.first, pair.second),
                         error -> view.showError(error.getMessage())
                 );
         disposables.add(d);
@@ -181,7 +219,7 @@ public class SearchPresenter implements SearchContract.Presenter {
             view.onNetworkDisconnected();
         }
 
-        NetworkManager.addConnectivityListener(context, new ConnectivityManager.NetworkCallback() {
+        connectivityListenerCallback = new ConnectivityManager.NetworkCallback() {
             @Override
             public void onAvailable(@NonNull Network network) {
                 super.onAvailable(network);
@@ -193,8 +231,17 @@ public class SearchPresenter implements SearchContract.Presenter {
                 super.onLost(network);
                 view.onNetworkDisconnected();
             }
-        });
+        };
+
+        NetworkManager.addConnectivityListener(context, connectivityListenerCallback);
     }
+
+    @Override
+    public void removeConnectivityListener(Context context) {
+        NetworkManager.removeConnectivityListener(context, connectivityListenerCallback);
+
+    }
+
 
     @Override
     public boolean isNetworkDisconnected(Context context) {
@@ -204,6 +251,8 @@ public class SearchPresenter implements SearchContract.Presenter {
 
     @Override
     public void onDetach() {
+        removeConnectivityListener(context);
         disposables.clear();
     }
+
 }

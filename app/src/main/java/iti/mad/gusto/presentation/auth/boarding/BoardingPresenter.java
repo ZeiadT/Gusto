@@ -3,7 +3,7 @@ package iti.mad.gusto.presentation.auth.boarding;
 import android.content.Context;
 
 import iti.mad.gusto.R;
-import iti.mad.gusto.data.model.BoardingItem;
+import iti.mad.gusto.domain.entity.BoardingItem;
 import iti.mad.gusto.data.repo.SettingsRepository;
 
 import java.util.ArrayList;

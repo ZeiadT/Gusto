@@ -2,7 +2,9 @@ package iti.mad.gusto.data.repo;
 
 import android.content.Context;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Flowable;
@@ -28,6 +30,16 @@ public class FavouriteRepository {
 
     public Flowable<List<FavouriteMealEntity>> getAllFavourites() {
         return localDatasource.getAllFavourites();
+    }
+
+    public Single<Set<String>> getFavouriteIds() {
+        return localDatasource.getAllFavourites()
+                .firstOrError()
+                .map(list -> {
+                    Set<String> set = new HashSet<>();
+                    for (FavouriteMealEntity e : list) set.add(e.getId());
+                    return set;
+                });
     }
 
     public Completable deleteFavouriteById(FavouriteMealEntity plan) {

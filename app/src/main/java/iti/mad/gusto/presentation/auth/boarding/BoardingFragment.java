@@ -13,13 +13,11 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import iti.mad.gusto.R;
-import iti.mad.gusto.data.model.BoardingItem;
-import iti.mad.gusto.presentation.auth.login.LoginFragment;
+import iti.mad.gusto.domain.entity.BoardingItem;
 import iti.mad.gusto.presentation.common.component.WormDotIndicator;
 import iti.mad.gusto.presentation.common.util.AnimationUtil;
 

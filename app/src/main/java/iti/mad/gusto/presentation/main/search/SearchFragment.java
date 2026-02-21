@@ -1,5 +1,6 @@
 package iti.mad.gusto.presentation.main.search;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -16,23 +17,29 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import iti.mad.gusto.R;
 import iti.mad.gusto.domain.entity.MealEntity;
 import iti.mad.gusto.domain.entity.SearchTagEntity;
+import iti.mad.gusto.presentation.common.component.RippleOverlayView;
 import iti.mad.gusto.presentation.common.util.ThemeAwareIconToast;
 import iti.mad.gusto.presentation.common.util.ThemeAwareIconToastWithVibration;
+import iti.mad.gusto.presentation.common.util.WaveEffectManager;
+import iti.mad.gusto.presentation.main.activity.PendingSearchTagProvider;
 import iti.mad.gusto.presentation.mealdetails.MealDetailsActivity;
 
-public class SearchFragment extends Fragment implements SearchContract.View {
+public class SearchFragment extends Fragment implements SearchContract.View, TagReceiver {
     TextInputEditText searchMealEditText;
     MaterialAutoCompleteTextView searchTagEditText;
     Button clearBtn;
@@ -46,6 +53,8 @@ public class SearchFragment extends Fragment implements SearchContract.View {
     View connectionLottie;
     View appBarLayout;
     View emptyView;
+    private RippleOverlayView rippleOverlay;
+    private View rootLayout;
 
 
     @Override
@@ -70,6 +79,8 @@ public class SearchFragment extends Fragment implements SearchContract.View {
         connectionLottie = view.findViewById(R.id.connectionLottie);
         appBarLayout = view.findViewById(R.id.appBarLayout);
         emptyView = view.findViewById(R.id.emptyView);
+        rippleOverlay = requireActivity().findViewById(R.id.rippleOverlay);
+        rootLayout = requireActivity().findViewById(R.id.main);
 
 
         presenter = new SearchPresenter(requireContext(), this);
@@ -82,14 +93,23 @@ public class SearchFragment extends Fragment implements SearchContract.View {
                     savedInstanceState.getString("searchQuery"),
                     savedInstanceState.getParcelableArrayList("searchedMeals")
             );
-        } else if (getArguments() != null) {
-            SearchFragmentArgs args = SearchFragmentArgs.fromBundle(getArguments());
-            if (args.getSearchTag() != null) {
-                presenter.onTagSelected(args.getSearchTag());
-            }
         }
 
         presenter.addConnectivityListener(requireContext());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getActivity() instanceof PendingSearchTagProvider) {
+            SearchTagEntity tag = ((PendingSearchTagProvider) getActivity()).getAndClearPendingSearchTag();
+            if (tag != null && presenter != null) {
+                onTagReceived(tag);
+            }
+        }
+        if (presenter != null && mealSearchAdapter != null && mealSearchAdapter.getItemCount() > 0) {
+            presenter.refreshFavouriteStates();
+        }
     }
 
     @Override
@@ -104,6 +124,7 @@ public class SearchFragment extends Fragment implements SearchContract.View {
     void initViews() {
         // Tag Search Bar -- On Item Clicked
         searchTagEditText.setOnItemClickListener((parent, view, position, id) -> {
+            hideKeyboard();
             SearchTagEntity selectedItem = (SearchTagEntity) parent.getItemAtPosition(position);
             presenter.onTagSelected(selectedItem);
         });
@@ -125,9 +146,11 @@ public class SearchFragment extends Fragment implements SearchContract.View {
         });
 
         // Tag Search Bar -- On Clear Clicked
-        clearBtn.setOnClickListener(v -> presenter.onClearTagsClicked());
+        clearBtn.setOnClickListener(v -> {
+            hideKeyboard();
+            presenter.onClearTagsClicked();
+        });
 
-        // Selected Tags -- On Tag Removed
         selectedTagsAdapter = new SelectedTagAdapter(tag -> presenter.onTagRemoved(tag));
         searchTagsAdapter = new SearchTagAdapter(requireContext(), new ArrayList<>());
 
@@ -154,8 +177,12 @@ public class SearchFragment extends Fragment implements SearchContract.View {
             }
 
             @Override
-            public void onFavoriteClick(MealEntity meal, boolean isFavorite) {
-                presenter.onMealFavClicked(meal);
+            public void onFavoriteClick(MealEntity meal, boolean isFavorite, View btn) {
+                presenter.onMealFavClicked(meal, isFavorite);
+
+                if (isFavorite && btn.isPressed()) {
+                    WaveEffectManager.fireWave(btn, rootLayout, rippleOverlay);
+                }
             }
         });
 
@@ -168,7 +195,7 @@ public class SearchFragment extends Fragment implements SearchContract.View {
         mealsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         mealsRecyclerView.setAdapter(mealSearchAdapter);
 
-        if(mealSearchAdapter.getItemCount() == 0 && !presenter.isNetworkDisconnected(requireContext())){
+        if (mealSearchAdapter.getItemCount() == 0 && !presenter.isNetworkDisconnected(requireContext())) {
             emptyView.setVisibility(View.VISIBLE);
             mealsRecyclerView.setVisibility(View.GONE);
         }
@@ -185,6 +212,13 @@ public class SearchFragment extends Fragment implements SearchContract.View {
     }
 
     @Override
+    public void refreshFavouriteStates(Set<String> favouriteIds) {
+        if (mealSearchAdapter != null) {
+            mealSearchAdapter.setFavouriteIds(favouriteIds);
+        }
+    }
+
+    @Override
     public void navigateToMealDetails(String mealId) {
         Intent intent = new Intent(requireContext(), MealDetailsActivity.class);
         intent.putExtra("mealId", mealId);
@@ -197,7 +231,7 @@ public class SearchFragment extends Fragment implements SearchContract.View {
     }
 
     @Override
-    public void showMeals(List<MealEntity> meals) {
+    public void showMeals(List<MealEntity> meals, Set<String> favouriteIds) {
         if (meals.isEmpty()) {
             emptyView.setVisibility(View.VISIBLE);
             mealsRecyclerView.setVisibility(View.GONE);
@@ -205,17 +239,21 @@ public class SearchFragment extends Fragment implements SearchContract.View {
             emptyView.setVisibility(View.GONE);
             mealsRecyclerView.setVisibility(View.VISIBLE);
         }
-        mealSearchAdapter.setList(meals);
+        mealSearchAdapter.setList(meals, favouriteIds != null ? favouriteIds : new HashSet<>());
     }
 
     @Override
     public void showError(String errMsg) {
-        ThemeAwareIconToast.error(requireContext(), errMsg);
+        if (isAdded()) {
+            ThemeAwareIconToast.error(requireContext(), errMsg);
+        }
     }
 
     @Override
     public void showWarning(String msg) {
-        ThemeAwareIconToastWithVibration.warning(requireContext(), msg);
+        if (isAdded()) {
+            ThemeAwareIconToastWithVibration.warning(requireContext(), msg);
+        }
     }
 
 
@@ -243,5 +281,32 @@ public class SearchFragment extends Fragment implements SearchContract.View {
             connectionLottie.setVisibility(View.GONE);
             presenter.searchForMeals(Objects.requireNonNull(searchMealEditText.getText()).toString());
         });
+    }
+
+
+    private void hideKeyboard() {
+        View view = requireActivity().getCurrentFocus();
+        if (view == null) return;
+
+        InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm == null) return;
+
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+
+
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (presenter != null && !hidden) {
+            presenter.refreshFavouriteStates();
+        }
+    }
+
+    @Override
+    public void onTagReceived(SearchTagEntity tag) {
+        presenter.onClearTagsClicked();
+        presenter.onTagSelected(tag);
     }
 }

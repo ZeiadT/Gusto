@@ -132,7 +132,9 @@ public class PlanFragment extends Fragment implements PlanContract.View {
 
     @Override
     public void showError(String message) {
-        ThemeAwareIconToast.error(requireContext(), message);
+        if (isAdded()) {
+            ThemeAwareIconToast.error(requireContext(), message);
+        }
     }
 
     @Override

@@ -1,6 +1,6 @@
 package iti.mad.gusto.presentation.auth.boarding;
 
-import iti.mad.gusto.data.model.BoardingItem;
+import iti.mad.gusto.domain.entity.BoardingItem;
 
 public interface BoardingContract {
     interface View {

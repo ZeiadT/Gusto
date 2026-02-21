@@ -98,4 +98,14 @@ public class FeaturedMealCard extends MaterialCardView {
 
         ImageUtil.loadFromNetwork(getContext(), ivMealImage, imageUrl);
     }
+
+    public void setFavouriteIcon(boolean isFavourite) {
+        if (btnFavorite == null) return;
+        btnFavorite.setChecked(isFavourite);
+        btnFavorite.setButtonDrawable(isFavourite ? R.drawable.bookmark_fill : R.drawable.bookmark);
+    }
+
+    public CheckBox getBtnFavorite(){
+        return btnFavorite;
+    }
 }

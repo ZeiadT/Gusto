@@ -63,10 +63,23 @@ public class FavouriteFragment extends Fragment implements FavouriteContract.Vie
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        presenter.getMeals();
+    public void onResume() {
+        super.onResume();
+        if (presenter != null) {
+            presenter.getMeals();
+        }
     }
+
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (presenter != null && !hidden) {
+            presenter.getMeals();
+        }
+    }
+
+
 
     @Override
     public void showMeals(List<FavouriteMealEntity> meals) {
@@ -83,7 +96,9 @@ public class FavouriteFragment extends Fragment implements FavouriteContract.Vie
 
     @Override
     public void showError(String message) {
-        ThemeAwareIconToast.error(requireContext(), message);
+        if (isAdded()) {
+            ThemeAwareIconToast.error(requireContext(), message);
+        }
     }
 
     private void navigateToDetails(String mealId) {

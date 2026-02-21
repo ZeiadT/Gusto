@@ -3,6 +3,7 @@ package iti.mad.gusto.presentation.common.util;
 import android.animation.ArgbEvaluator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
+import android.graphics.drawable.Animatable2;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.vectordrawable.graphics.drawable.Animatable2Compat;
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat;
 
 /**
@@ -65,13 +67,33 @@ public class AnimationUtil {
      *
      * @param imageView The ImageView containing the vector drawable.
      */
-    public static void startVectorAnimation(ImageView imageView) {
+    public static void startVectorAnimation(ImageView imageView, Runnable onEnd) {
         if (imageView == null) return;
         Drawable drawable = imageView.getDrawable();
+
         if (drawable instanceof AnimatedVectorDrawableCompat) {
-            ((AnimatedVectorDrawableCompat) drawable).start();
+            AnimatedVectorDrawableCompat avd = (AnimatedVectorDrawableCompat) drawable;
+            avd.registerAnimationCallback(new Animatable2Compat.AnimationCallback() {
+                @Override
+                public void onAnimationEnd(Drawable drawable) {
+                    avd.unregisterAnimationCallback(this); // Prevent memory leaks
+                    if (onEnd != null) onEnd.run();
+                }
+            });
+            avd.start();
         } else if (drawable instanceof AnimatedVectorDrawable) {
-            ((AnimatedVectorDrawable) drawable).start();
+            AnimatedVectorDrawable avd = (AnimatedVectorDrawable) drawable;
+            avd.registerAnimationCallback(new Animatable2.AnimationCallback() {
+                @Override
+                public void onAnimationEnd(Drawable drawable) {
+                    avd.unregisterAnimationCallback(this); // Prevent memory leaks
+                    if (onEnd != null) onEnd.run();
+                }
+            });
+            avd.start();
+        } else {
+            // Fallback if not animated
+            if (onEnd != null) onEnd.run();
         }
     }
 
@@ -92,19 +114,24 @@ public class AnimationUtil {
     }
 
     /**
-     * Delays visibility change and applies an XML animation resource.
-     *
-     * @param view      The view to animate.
-     * @param animResId The resource ID of the animation XML (e.g., R.anim.fade_in).
-     * @param delay     The delay before making the view visible and starting animation (in ms).
+     * Applies an XML animation resource and triggers a callback upon completion.
      */
-    public static void animateVisibilityWithResource(View view, int animResId, long delay) {
+    public static void animateVisibilityWithResource(View view, int animResId, Runnable onEnd) {
         if (view == null) return;
-        view.postDelayed(() -> {
-            view.setVisibility(View.VISIBLE);
-            Animation animation = AnimationUtils.loadAnimation(view.getContext(), animResId);
-            view.startAnimation(animation);
-        }, delay);
+
+        view.setVisibility(View.VISIBLE);
+        Animation animation = AnimationUtils.loadAnimation(view.getContext(), animResId);
+
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override public void onAnimationStart(Animation animation) {}
+            @Override public void onAnimationRepeat(Animation animation) {}
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                if (onEnd != null) onEnd.run();
+            }
+        });
+
+        view.startAnimation(animation);
     }
 
     /**

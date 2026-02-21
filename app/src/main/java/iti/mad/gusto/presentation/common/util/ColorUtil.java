@@ -23,16 +23,14 @@ public class ColorUtil {
     }
 
     public static Single<Integer> getColorFromBitmap(Context context, Bitmap bitmap) {
-        return Single.<Integer>create(
-                emitter -> Palette.from(bitmap).generate(palette -> {
-                    int defaultColor =
-                            ContextCompat.getColor(context, R.color.orange_500_faded);
+        final Context appContext = context.getApplicationContext();
+        final int defaultColor = ContextCompat.getColor(appContext, R.color.orange_500);
 
-                    int dominantColor = defaultColor;
-                    if (palette != null)
-                        dominantColor = palette.getDominantColor(defaultColor);
-
-                    emitter.onSuccess(dominantColor);
-                })).subscribeOn(Schedulers.computation()).observeOn(AndroidSchedulers.mainThread());
+        return Single.fromCallable(() -> {
+                    Palette palette = Palette.from(bitmap).generate();
+                    return palette.getDominantColor(defaultColor);
+                })
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 }

@@ -42,20 +42,42 @@ public class ImageUtil {
                 .placeholder(R.drawable.logo)
                 .error(R.drawable.logo_white)
                 .into(new CustomTarget<Bitmap>() {
+                    private Disposable colorDisposable;
+
                     @Override
                     public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                         imageView.setImageBitmap(resource);
 
-                        Disposable d = ColorUtil.getColorFromBitmap(context, resource).subscribe(imageView::setBackgroundColor, t -> {
-                            Log.d("TAG", "onResourceReady: " + t.getMessage());
+                        colorDisposable = ColorUtil.getColorFromBitmap(context, resource)
+                                .subscribe(
+                                        imageView::setBackgroundColor,
+                                        error -> Log.e("ImageUtil", "Color extraction failed: " + error.getMessage())
+                                );
+
+                        imageView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+                            @Override
+                            public void onViewAttachedToWindow(@NonNull View v) {
+                            }
+
+                            @Override
+                            public void onViewDetachedFromWindow(@NonNull View v) {
+                                if (colorDisposable != null && !colorDisposable.isDisposed()) {
+                                    colorDisposable.dispose();
+                                }
+                                imageView.removeOnAttachStateChangeListener(this);
+                            }
                         });
                     }
 
                     @Override
                     public void onLoadCleared(@Nullable Drawable placeholder) {
                         imageView.setImageBitmap(null);
+                        imageView.setBackgroundColor(context.getResources().getColor(android.R.color.transparent, context.getTheme()));
+
+                        if (colorDisposable != null && !colorDisposable.isDisposed()) {
+                            colorDisposable.dispose();
+                        }
                     }
                 });
-
     }
 }

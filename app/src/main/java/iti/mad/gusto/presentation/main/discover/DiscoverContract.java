@@ -12,6 +12,7 @@ import iti.mad.gusto.domain.entity.MealType;
 public interface DiscoverContract {
     interface View {
         void setFeaturedMeal(MealEntity meal);
+        void setFeaturedMealFavouriteIcon(boolean isFavourite);
         void setCategories(List<CategoryEntity> categories);
         void setCountries(List<CountryEntity> countries);
         void showError(String errMsg);
@@ -27,8 +28,10 @@ public interface DiscoverContract {
         void getCountries();
         void onTagClicked(CategoryEntity category);
         void onFeaturedMealAddToPlan(String date, MealType type);
-        void onFeaturedMealAddToFavourite();
+        void onFeaturedMealAddToFavourite(boolean isFavorite);
+        void refreshFeaturedMealFavouriteState();
         void addConnectivityListener(Context context);
+        void removeConnectivityListener(Context context);
         boolean isNetworkDisconnected(Context context);
         void onDetach();
 

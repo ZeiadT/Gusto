@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     tools:context=".presentation.mealdetails.MealDetailsActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -137,61 +138,36 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp" />
 
-                <LinearLayout
+                <!-- Ingredients Section -->
+                <include
+                    android:id="@+id/header_ingredients"
+                    layout="@layout/item_expandable_group"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/ingredient_title"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/ingredients"
-                        android:textColor="@color/colorOnBackground"
-                        android:textSize="16sp"
-                        app:fontFamily="@font/montserrat_semibold" />
-
-                    <TextView
-                        android:id="@+id/ingredient_count"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bg_ingredient_text"
-                        android:text="8 items"
-                        android:textColor="@color/colorTextMuted"
-                        android:textSize="14sp"
-                        app:fontFamily="@font/montserrat_semibold" />
-                </LinearLayout>
+                    android:layout_marginTop="24dp" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/ingredient_recyclerview"
+                    android:id="@+id/rv_ingredients"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
                     android:nestedScrollingEnabled="false"
-                    tools:itemCount="4" />
+                    tools:itemCount="6" />
 
-                <TextView
-                    android:id="@+id/instructions_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
-                    android:text="@string/instructions"
-                    android:textColor="@color/colorOnBackground"
-                    android:textSize="16sp"
-                    app:fontFamily="@font/montserrat_semibold" />
-
-                <TextView
-                    android:id="@+id/instructions_desc"
+                <!-- Instructions Section -->
+                <include
+                    android:id="@+id/header_instructions"
+                    layout="@layout/item_expandable_group"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Meal Instructions List..."
-                    android:textColor="@color/colorOnBackground"
-                    android:textSize="14sp"
-                    app:fontFamily="@font/montserrat_regular" />
+                    android:layout_marginTop="8dp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_instructions"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    android:visibility="gone"
+                    tools:itemCount="6" />
 
                 <View
                     android:layout_width="match_parent"
@@ -229,5 +205,14 @@
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
         app:lottie_rawRes="@raw/lost_connection" />
+
+
+    <iti.mad.gusto.presentation.common.component.RippleOverlayView
+        android:id="@+id/detailsRippleOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="false"
+        android:focusable="false" />
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -6,13 +6,11 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,19 +28,24 @@ import iti.mad.gusto.domain.entity.MealEntity;
 import iti.mad.gusto.domain.entity.SearchTagEntity;
 import iti.mad.gusto.presentation.common.component.AddToPlanBottomSheet;
 import iti.mad.gusto.presentation.common.component.FeaturedMealCard;
+import iti.mad.gusto.presentation.common.component.RippleOverlayView;
 import iti.mad.gusto.presentation.common.util.ThemeAwareIconToast;
 import iti.mad.gusto.presentation.common.util.ThemeAwareIconToastWithVibration;
+import iti.mad.gusto.presentation.common.util.WaveEffectManager;
+import iti.mad.gusto.presentation.main.activity.BottomNavBarCommunicator;
 import iti.mad.gusto.presentation.mealdetails.MealDetailsActivity;
 
 public class DiscoverFragment extends Fragment implements DiscoverContract.View {
-    RecyclerView recyclerView;
-    FeaturedMealCard cardDailySpecial;
-    ChipGroup countriesGroup;
-    CategoriesAdapter categoryAdapter;
-    DiscoverContract.Presenter presenter;
+    private RecyclerView recyclerView;
+    private FeaturedMealCard cardDailySpecial;
+    private ChipGroup countriesGroup;
+    private ScrollView contentHolder;
+    private View connectionLottie;
+    private View rootLayout;
 
-    ScrollView contentHolder;
-    View connectionLottie;
+    private CategoriesAdapter categoryAdapter;
+    private DiscoverContract.Presenter presenter;
+    private RippleOverlayView rippleOverlay;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -65,7 +68,16 @@ public class DiscoverFragment extends Fragment implements DiscoverContract.View 
         countriesGroup = view.findViewById(R.id.chipGroupCountries);
         contentHolder = view.findViewById(R.id.contentHolder);
         connectionLottie = view.findViewById(R.id.connectionLottie);
+        recyclerView = view.findViewById(R.id.categories_recyclerview);
+        rippleOverlay = requireActivity().findViewById(R.id.rippleOverlay);
+        rootLayout = requireActivity().findViewById(R.id.main);
 
+        setupRecyclerView();
+        setupListeners();
+
+        if (!presenter.isNetworkDisconnected(requireContext())) {
+            presenter.onViewCreated();
+        }
 
         categoryAdapter = new CategoriesAdapter(cat -> navigateToSearchWithTag(cat.toTag()));
 
@@ -75,28 +87,22 @@ public class DiscoverFragment extends Fragment implements DiscoverContract.View 
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        if (!presenter.isNetworkDisconnected(requireContext())) {
-            presenter.onViewCreated();
+    public void onResume() {
+        super.onResume();
+        if (presenter != null) {
+            presenter.refreshFeaturedMealFavouriteState();
         }
-        cardDailySpecial.setOnClickListener(v -> {
-            Intent intent = new Intent(requireContext(), MealDetailsActivity.class);
-            intent.putExtra("mealId", cardDailySpecial.getMealId());
-            startActivity(intent);
-        });
-        cardDailySpecial.setOnAddClickListener(v -> {
-            AddToPlanBottomSheet bottomSheet = AddToPlanBottomSheet.newInstance();
-            bottomSheet.show(getParentFragmentManager(), "AddToPlanBottomSheet");
-            bottomSheet.setOnConfirmListener((date, mealType) -> {
-                presenter.onFeaturedMealAddToPlan(date, mealType);
-            });
-        });
-        cardDailySpecial.setOnFavoriteClickListener((btn, isChecked) -> {
-            presenter.onFeaturedMealAddToFavourite();
-            Log.d("TAG", "onStart: setOnFavoriteClickListener " + isChecked);
-            Log.d("TAG", "onStart: setOnFavoriteClickListener " + btn.isChecked());
-        });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        recyclerView.setAdapter(null);
+        recyclerView = null;
+        cardDailySpecial = null;
+        countriesGroup = null;
+        contentHolder = null;
+        connectionLottie = null;
     }
 
     @Override
@@ -106,10 +112,23 @@ public class DiscoverFragment extends Fragment implements DiscoverContract.View 
     }
 
     @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (presenter != null && !hidden) {
+            presenter.refreshFeaturedMealFavouriteState();
+        }
+    }
+
+    @Override
     public void setFeaturedMeal(MealEntity meal) {
         cardDailySpecial.setMealData(meal.getName(), meal.getCategory(), meal.getImage());
         cardDailySpecial.setMealId(meal.getId());
 
+    }
+
+    @Override
+    public void setFeaturedMealFavouriteIcon(boolean isFavourite) {
+        cardDailySpecial.setFavouriteIcon(isFavourite);
     }
 
     @Override
@@ -128,12 +147,16 @@ public class DiscoverFragment extends Fragment implements DiscoverContract.View 
 
     @Override
     public void showError(String errMsg) {
-        ThemeAwareIconToast.error(requireContext(), errMsg);
+        if (isAdded()) {
+            ThemeAwareIconToast.error(requireContext(), errMsg);
+        }
     }
 
     @Override
     public void showWarning(String msg) {
-        ThemeAwareIconToastWithVibration.warning(requireContext(), msg);
+        if (isAdded()) {
+            ThemeAwareIconToastWithVibration.warning(requireContext(), msg);
+        }
     }
 
     @Override
@@ -175,15 +198,42 @@ public class DiscoverFragment extends Fragment implements DiscoverContract.View 
         countriesGroup.addView(chip);
     }
 
+    private void setupRecyclerView() {
+        categoryAdapter = new CategoriesAdapter(cat -> navigateToSearchWithTag(cat.toTag()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
+        recyclerView.setAdapter(categoryAdapter);
+    }
+
+    private void setupListeners() {
+        cardDailySpecial.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), MealDetailsActivity.class);
+            intent.putExtra("mealId", cardDailySpecial.getMealId());
+            startActivity(intent);
+        });
+
+        cardDailySpecial.setOnAddClickListener(v -> {
+            AddToPlanBottomSheet bottomSheet = AddToPlanBottomSheet.newInstance();
+            bottomSheet.show(getParentFragmentManager(), "AddToPlanBottomSheet");
+            bottomSheet.setOnConfirmListener((date, mealType) -> {
+                presenter.onFeaturedMealAddToPlan(date, mealType);
+            });
+        });
+
+        cardDailySpecial.setOnFavoriteClickListener((btn, isChecked) -> {
+            presenter.onFeaturedMealAddToFavourite(isChecked);
+
+            if (isChecked && btn.isPressed()) {
+                WaveEffectManager.fireWave(btn, rootLayout, rippleOverlay);
+            }
+
+        });
+    }
+
     private void navigateToSearchWithTag(SearchTagEntity tag) {
+        if (!(requireActivity() instanceof BottomNavBarCommunicator)) return;
 
-        DiscoverFragmentDirections.ActionDiscoverToSearch action =
-                DiscoverFragmentDirections.actionDiscoverToSearch()
-                        .setSearchTag(tag);
-
-        if (getView() != null) {
-            Navigation.findNavController(getView()).navigate(action);
-        }
+        BottomNavBarCommunicator communicator = (BottomNavBarCommunicator) requireActivity();
+        communicator.navigateToSearchWithTag(tag);
     }
 
 }

@@ -16,34 +16,34 @@ public class App extends Application {
         super.onCreate();
         FirebaseApp.initializeApp(getApplicationContext());
 
-        Log.d("TAG", "onCreate: Application");
-        SettingsRepository settingsRepository = SettingsRepository.getInstance(getApplicationContext());
-
-        LocalizationManager languageManager = LocalizationManager.getInstance();
-        languageManager.setStorage(new LocalizationManager.LocaleStorage() {
-            @Override
-            public void saveLanguage(String languageTag) {
-                settingsRepository.setLang(languageTag);
-            }
-
-            @Override
-            public String getSavedLanguage() {
-                return settingsRepository.getLang();
-            }
-        });
-
-        ThemeManager themeManager = ThemeManager.getInstance();
-        themeManager.setStorage(new ThemeManager.ThemeStorage() {
-            @Override
-            public void saveThemeMode(int themeMode) {
-                settingsRepository.setTheme(themeMode);
-            }
-
-            @Override
-            public int getSavedThemeMode() {
-                return settingsRepository.getTheme();
-            }
-        });
+//        Log.d("TAG", "onCreate: Application");
+//        SettingsRepository settingsRepository = SettingsRepository.getInstance(getApplicationContext());
+//
+//        LocalizationManager languageManager = LocalizationManager.getInstance();
+//        languageManager.setStorage(new LocalizationManager.LocaleStorage() {
+//            @Override
+//            public void saveLanguage(String languageTag) {
+//                settingsRepository.setLang(languageTag);
+//            }
+//
+//            @Override
+//            public String getSavedLanguage() {
+//                return settingsRepository.getLang();
+//            }
+//        });
+//
+//        ThemeManager themeManager = ThemeManager.getInstance();
+//        themeManager.setStorage(new ThemeManager.ThemeStorage() {
+//            @Override
+//            public void saveThemeMode(int themeMode) {
+//                settingsRepository.setTheme(themeMode);
+//            }
+//
+//            @Override
+//            public int getSavedThemeMode() {
+//                return settingsRepository.getTheme();
+//            }
+//        });
 
     }
 }

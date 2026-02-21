@@ -18,6 +18,7 @@ import iti.mad.gusto.data.repo.MealRepository;
 import iti.mad.gusto.data.repo.PlanRepository;
 import iti.mad.gusto.domain.entity.CategoryEntity;
 import iti.mad.gusto.domain.entity.FavouriteMealEntity;
+import iti.mad.gusto.domain.entity.MealEntity;
 import iti.mad.gusto.domain.entity.MealType;
 import iti.mad.gusto.domain.entity.PlanMealEntity;
 
@@ -25,11 +26,13 @@ public class DiscoverPresenter implements DiscoverContract.Presenter {
 
     DiscoverContract.View view;
     MealRepository mealRepository;
+    private MealEntity featuredMeal;
     AuthRepository authRepository;
     PlanRepository planRepository;
     FavouriteRepository favouriteRepository;
     CompositeDisposable disposables;
     Context context;
+    ConnectivityManager.NetworkCallback connectivityListenerCallback;
 
     public DiscoverPresenter(Context context, DiscoverContract.View view) {
         this.view = view;
@@ -53,7 +56,16 @@ public class DiscoverPresenter implements DiscoverContract.Presenter {
         Disposable disposable = mealRepository.getRandomMeal()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        mealEntity -> view.setFeaturedMeal(mealEntity),
+                        mealEntity -> {
+                            this.featuredMeal = mealEntity;
+                            view.setFeaturedMeal(mealEntity);
+
+                            Disposable d = favouriteRepository.isFavourite(mealEntity.getId())
+                                    .observeOn(AndroidSchedulers.mainThread()).subscribe(
+                                            isFavourite -> view.setFeaturedMealFavouriteIcon(isFavourite),
+                                            t -> view.showError(t.getMessage()));
+                            disposables.add(d);
+                        },
                         t -> view.showError(t.getMessage())
                 );
 
@@ -100,64 +112,58 @@ public class DiscoverPresenter implements DiscoverContract.Presenter {
             view.showWarning(pleaseSignIn);
             return;
         }
+        if (featuredMeal == null) return;
 
-        Disposable d = mealRepository.getRandomMeal()
+        Disposable d = planRepository.addPlan(new PlanMealEntity(featuredMeal, date, meal))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        mealEntity -> {
-                            Disposable dd = planRepository.addPlan(new PlanMealEntity(mealEntity, date, meal))
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(
-                                            () -> {
-                                            },
-                                            t -> view.showError(t.getMessage())
-                                    );
-
-                            disposables.add(dd);
-                        },
+                        () -> { },
                         t -> view.showError(t.getMessage())
                 );
-
         disposables.add(d);
     }
 
     @Override
-    public void onFeaturedMealAddToFavourite() {
+    public void onFeaturedMealAddToFavourite(boolean isFavorite) {
         if (authRepository.isAnonymousUser()) {
             String pleaseSignIn = context.getString(R.string.please_sign_in);
             view.showWarning(pleaseSignIn);
+            view.setFeaturedMealFavouriteIcon(false);
             return;
         }
+        if (featuredMeal == null) return;
 
-        Disposable d = mealRepository.getRandomMeal()
+        FavouriteMealEntity entity = new FavouriteMealEntity(featuredMeal.getId(), featuredMeal.getName(), featuredMeal.getImage(), featuredMeal.getCategory(), featuredMeal.getArea());
+        Disposable d = (isFavorite
+                ? favouriteRepository.addFavourite(entity)
+                : favouriteRepository.deleteFavouriteById(entity))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        mealEntity -> {
-                            Disposable dd = favouriteRepository.addFavourite(new FavouriteMealEntity(mealEntity.getId(), mealEntity.getName(), mealEntity.getImage(), mealEntity.getCategory(), mealEntity.getArea()))
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(
-                                            () -> {
-
-                                            },
-                                            t -> view.showError(t.getMessage())
-                                    );
-
-                            disposables.add(dd);
-                        },
+                        () -> view.setFeaturedMealFavouriteIcon(isFavorite),
                         t -> view.showError(t.getMessage())
                 );
-
         disposables.add(d);
+    }
 
+    @Override
+    public void refreshFeaturedMealFavouriteState() {
+        if (featuredMeal == null) return;
+        Disposable d = favouriteRepository.isFavourite(featuredMeal.getId())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        view::setFeaturedMealFavouriteIcon,
+                        t -> view.setFeaturedMealFavouriteIcon(false)
+                );
+        disposables.add(d);
     }
 
     @Override
     public void addConnectivityListener(Context context) {
-        if (NetworkManager.isNetworkDisconnected(context)){
+        if (NetworkManager.isNetworkDisconnected(context)) {
             view.onNetworkDisconnected();
         }
 
-        NetworkManager.addConnectivityListener(context, new ConnectivityManager.NetworkCallback() {
+        connectivityListenerCallback = new ConnectivityManager.NetworkCallback() {
             @Override
             public void onAvailable(@NonNull Network network) {
                 super.onAvailable(network);
@@ -169,7 +175,15 @@ public class DiscoverPresenter implements DiscoverContract.Presenter {
                 super.onLost(network);
                 view.onNetworkDisconnected();
             }
-        });
+        };
+
+        NetworkManager.addConnectivityListener(context, connectivityListenerCallback);
+    }
+
+    @Override
+    public void removeConnectivityListener(Context context) {
+        NetworkManager.removeConnectivityListener(context, connectivityListenerCallback);
+
     }
 
     @Override
@@ -179,6 +193,7 @@ public class DiscoverPresenter implements DiscoverContract.Presenter {
 
     @Override
     public void onDetach() {
+        removeConnectivityListener(context);
         disposables.dispose();
 
     }

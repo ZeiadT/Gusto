@@ -25,6 +25,7 @@ public class LoginPresenter implements LoginContract.Presenter {
     private final CompositeDisposable disposables;
     private final Context context;
 
+
     public LoginPresenter(Context applicationContext, LoginContract.View view) {
         this.context = applicationContext.getApplicationContext();
         this.view = view;

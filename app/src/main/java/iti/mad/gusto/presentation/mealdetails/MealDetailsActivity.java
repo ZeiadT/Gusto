@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,35 +20,45 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 
-import java.util.List;
 import java.util.Objects;
 
 import iti.mad.gusto.R;
-import iti.mad.gusto.domain.entity.InstructionEntity;
 import iti.mad.gusto.domain.entity.MealEntity;
 import iti.mad.gusto.presentation.common.component.AddToPlanBottomSheet;
+import iti.mad.gusto.presentation.common.component.RippleOverlayView;
 import iti.mad.gusto.presentation.common.util.ImageUtil;
 import iti.mad.gusto.presentation.common.util.ThemeAwareIconToast;
 import iti.mad.gusto.presentation.common.util.ThemeAwareIconToastWithVibration;
+import iti.mad.gusto.presentation.common.util.WaveEffectManager;
 
 public class MealDetailsActivity extends AppCompatActivity implements MealDetailsContract.View {
+
     private YouTubePlayerView youTubePlayerView;
-    private RecyclerView ingredientRecyclerView;
+
+    // Ingredients section
+    private View headerIngredients;
+    private RecyclerView rvIngredients;
     private IngredientAdapter ingredientAdapter;
+    private boolean ingredientsExpanded = true;
+
+    // Instructions section
+    private View headerInstructions;
+    private RecyclerView rvInstructions;
+    private InstructionAdapter instructionAdapter;
+    private boolean instructionsExpanded = false;
 
     private ImageView mealImageView;
     private TextView mealTitleTextView;
     private TextView mealCategoryTextView;
     private TextView mealCountryTextView;
-    private TextView mealInstructionsTextView;
-    private TextView mealIngredientsTextView;
     private FloatingActionButton addToPlanButton;
     private CheckBox favoriteCheckBox;
     private ImageButton backButton;
-    View contentHolder;
-    View connectionLottie;
-    View appBarLayout;
-
+    private View contentHolder;
+    private View connectionLottie;
+    private View appBarLayout;
+    private RippleOverlayView rippleOverlay;
+    private View rootLayout;
 
     MealDetailsContract.Presenter presenter;
 
@@ -64,24 +73,41 @@ public class MealDetailsActivity extends AppCompatActivity implements MealDetail
 
         youTubePlayerView = findViewById(R.id.youtube_player_view);
 
-        ingredientRecyclerView = findViewById(R.id.ingredient_recyclerview);
+        // --- Ingredients Section ---
+        headerIngredients = findViewById(R.id.header_ingredients);
+        rvIngredients = findViewById(R.id.rv_ingredients);
         ingredientAdapter = new IngredientAdapter();
-        mealIngredientsTextView = findViewById(R.id.ingredient_count);
+        rvIngredients.setLayoutManager(new LinearLayoutManager(this));
+        rvIngredients.setAdapter(ingredientAdapter);
+        setHeaderIcon(headerIngredients, R.drawable.ic_leaf);
+        setHeaderTitle(headerIngredients, getString(R.string.ingredients));
+        setExpandChevron(headerIngredients, ingredientsExpanded);
+        headerIngredients.setOnClickListener(v -> toggleIngredients());
+
+        // --- Instructions Section ---
+        headerInstructions = findViewById(R.id.header_instructions);
+        rvInstructions = findViewById(R.id.rv_instructions);
+        instructionAdapter = new InstructionAdapter();
+        rvInstructions.setLayoutManager(new LinearLayoutManager(this));
+        rvInstructions.setAdapter(instructionAdapter);
+        // Instructions collapsed by default
+        rvInstructions.setVisibility(View.GONE);
+        setHeaderIcon(headerInstructions, R.drawable.ic_hashtag);
+        setHeaderTitle(headerInstructions, getString(R.string.instructions));
+        setExpandChevron(headerInstructions, instructionsExpanded);
+        headerInstructions.setOnClickListener(v -> toggleInstructions());
 
         mealImageView = findViewById(R.id.imageView);
         mealTitleTextView = findViewById(R.id.titleTV);
-
         mealCategoryTextView = findViewById(R.id.category_tag);
         mealCountryTextView = findViewById(R.id.country_tag);
-
-        mealInstructionsTextView = findViewById(R.id.instructions_desc);
 
         contentHolder = findViewById(R.id.contentHolder);
         connectionLottie = findViewById(R.id.connectionLottie);
         appBarLayout = findViewById(R.id.appBarLayout);
 
-
-        initIngredientsRecyclerView();
+        rippleOverlay = findViewById(R.id.detailsRippleOverlay);
+        rootLayout = findViewById(R.id.main);
 
         presenter = new MealDetailsPresenter(this, this);
 
@@ -100,26 +126,85 @@ public class MealDetailsActivity extends AppCompatActivity implements MealDetail
             });
         });
 
-        favoriteCheckBox.setOnClickListener(v -> {
-            if (favoriteCheckBox.isChecked()) {
-                presenter.onFavoriteClicked();
-            }
+        favoriteCheckBox.setOnCheckedChangeListener((btn, isChecked) -> {
+            presenter.onFavoriteClicked(isChecked);
 
+            if (isChecked && btn.isPressed()) {
+                WaveEffectManager.fireWave(btn, rootLayout, rippleOverlay);
+            }
         });
 
         presenter.addConnectivityListener(this);
     }
 
-    void initIngredientsRecyclerView() {
-        ingredientRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        ingredientRecyclerView.setAdapter(ingredientAdapter);
-    }
-
     @Override
     protected void onStart() {
         super.onStart();
-
         getLifecycle().addObserver(youTubePlayerView);
+    }
+
+    // region Header helpers
+
+    /**
+     * Sets the section icon on the given header view.
+     */
+    private void setHeaderIcon(View header, int iconRes) {
+        ImageView icon = header.findViewById(R.id.iv_section_icon);
+        if (icon != null)
+            icon.setImageResource(iconRes);
+    }
+
+    /**
+     * Sets the title text on the given header view.
+     */
+    private void setHeaderTitle(View header, String title) {
+        TextView tv = header.findViewById(R.id.tv_group_title);
+        if (tv != null)
+            tv.setText(title);
+    }
+
+    /**
+     * Sets the count badge text on the given header view.
+     */
+    private void setHeaderCount(View header, String countText) {
+        TextView tv = header.findViewById(R.id.tv_group_count);
+        if (tv != null)
+            tv.setText(countText);
+    }
+
+    /**
+     * Rotates the expand chevron icon based on expanded state.
+     */
+    private void setExpandChevron(View header, boolean expanded) {
+        ImageView chevron = header.findViewById(R.id.iv_expand_icon);
+        if (chevron != null)
+            chevron.setRotation(expanded ? 180f : 0f);
+    }
+
+    // endregion
+
+    // region Toggle logic
+
+    private void toggleIngredients() {
+        ingredientsExpanded = !ingredientsExpanded;
+        rvIngredients.setVisibility(ingredientsExpanded ? View.VISIBLE : View.GONE);
+        setExpandChevron(headerIngredients, ingredientsExpanded);
+    }
+
+    private void toggleInstructions() {
+        instructionsExpanded = !instructionsExpanded;
+        rvInstructions.setVisibility(instructionsExpanded ? View.VISIBLE : View.GONE);
+        setExpandChevron(headerInstructions, instructionsExpanded);
+    }
+
+    // endregion
+
+    @Override
+    public void setFavouriteIcon(boolean isFavourite) {
+        if (favoriteCheckBox == null)
+            return;
+        favoriteCheckBox.setChecked(isFavourite);
+        favoriteCheckBox.setButtonDrawable(isFavourite ? R.drawable.bookmark_fill : R.drawable.bookmark);
     }
 
     @Override
@@ -130,13 +215,21 @@ public class MealDetailsActivity extends AppCompatActivity implements MealDetail
         mealTitleTextView.setText(meal.getName());
         mealCategoryTextView.setText(meal.getCategory());
         mealCountryTextView.setText(meal.getArea());
-        mealInstructionsTextView.setText(buildInstructions(meal.getInstructions()));
+
+        // Ingredients
         ingredientAdapter.setIngredients(meal.getIngredients());
-        String itemsLocalized = getString(R.string.items);
-        mealIngredientsTextView.setText(meal.getIngredients().size() + " " + itemsLocalized);
+        String ingredientCount = (meal.getIngredients() != null ? meal.getIngredients().size() : 0)
+                + " " + getString(R.string.items);
+        setHeaderCount(headerIngredients, ingredientCount);
+
+        // Instructions
+        instructionAdapter.setInstructions(meal.getInstructions());
+        String instructionCount = (meal.getInstructions() != null ? meal.getInstructions().size() : 0)
+                + " " + getString(R.string.steps);
+        setHeaderCount(headerInstructions, instructionCount);
+
         ImageUtil.loadFromNetwork(this, mealImageView, meal.getImage());
         if (meal.getYoutube() != null) {
-
             youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
                 @Override
                 public void onReady(@NonNull YouTubePlayer youTubePlayer) {
@@ -158,14 +251,11 @@ public class MealDetailsActivity extends AppCompatActivity implements MealDetail
 
     @Override
     public void showLoading() {
-
     }
 
     @Override
     public void hideLoading() {
-
     }
-
 
     @Override
     public void onNetworkDisconnected() {
@@ -193,17 +283,6 @@ public class MealDetailsActivity extends AppCompatActivity implements MealDetail
             connectionLottie.setVisibility(View.GONE);
             presenter.getMealDetails(Objects.requireNonNull(getIntent().getExtras()).getString("mealId"));
         });
-    }
-
-    private String buildInstructions(List<InstructionEntity> instructions) {
-        StringBuilder sb = new StringBuilder();
-
-        for (InstructionEntity instruction : instructions) {
-            sb.append(instruction.getStep());
-            sb.append("\n\n");
-        }
-
-        return sb.toString();
     }
 
 }

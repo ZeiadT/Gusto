@@ -14,13 +14,12 @@ public class MainPresenter implements MainContract.Presenter {
         authRepository = AuthRepository.getInstance(context);
     }
 
-    // MainPresenter.java
     @Override
-    public void onViewCreated(boolean isRecreation) {
-        if (isRecreation) {
-            view.removeOverlay();
+    public void animateIntro(boolean isRecreation, boolean shouldSkipOverlayAnimation) {
+        if (isRecreation || shouldSkipOverlayAnimation) {
+            view.skipIntro();
         } else {
-            view.showIntroAnimation();
+            view.animateIntro();
         }
     }
 
@@ -38,5 +37,4 @@ public class MainPresenter implements MainContract.Presenter {
     public boolean isGuestUser() {
         return authRepository.isAnonymousUser();
     }
-
 }

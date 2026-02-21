@@ -29,6 +29,7 @@ public class MealDetailsPresenter implements MealDetailsContract.Presenter {
     private final FavouriteRepository favouriteRepository;
     private final CompositeDisposable compositeDisposable;
     private MealEntity meal;
+    private ConnectivityManager.NetworkCallback connectivityListenerCallback;
 
     public MealDetailsPresenter(Context context, MealDetailsContract.View view) {
         this.view = view;
@@ -49,6 +50,13 @@ public class MealDetailsPresenter implements MealDetailsContract.Presenter {
                             view.hideLoading();
                             view.showMealDetails(meal);
                             this.meal = meal;
+                            Disposable favCheck = favouriteRepository.isFavourite(meal.getId())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(
+                                            view::setFavouriteIcon,
+                                            t -> view.setFavouriteIcon(false)
+                                    );
+                            compositeDisposable.add(favCheck);
                         },
                         t -> {
                             view.hideLoading();
@@ -78,22 +86,24 @@ public class MealDetailsPresenter implements MealDetailsContract.Presenter {
     }
 
     @Override
-    public void onFavoriteClicked() {
-
-        if(authRepository.isAnonymousUser()){
+    public void onFavoriteClicked(boolean isFavorite) {
+        if (meal == null) return;
+        if (authRepository.isAnonymousUser()) {
             String pleaseSignIn = context.getString(R.string.please_sign_in);
             view.showWarning(pleaseSignIn);
+            view.setFavouriteIcon(false);
             return;
         }
 
-        Disposable dd = favouriteRepository.addFavourite(new FavouriteMealEntity(meal.getId(), meal.getName(), meal.getImage(), meal.getCategory(), meal.getArea()))
+        FavouriteMealEntity entity = new FavouriteMealEntity(meal.getId(), meal.getName(), meal.getImage(), meal.getCategory(), meal.getArea());
+        Disposable dd = (isFavorite
+                ? favouriteRepository.addFavourite(entity)
+                : favouriteRepository.deleteFavouriteById(entity))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        () -> {
-                        },
+                        () -> view.setFavouriteIcon(isFavorite),
                         t -> view.showError(t.getMessage())
                 );
-
         compositeDisposable.add(dd);
     }
 
@@ -102,7 +112,8 @@ public class MealDetailsPresenter implements MealDetailsContract.Presenter {
         if (NetworkManager.isNetworkDisconnected(context)){
             view.onNetworkDisconnected();
         }
-        NetworkManager.addConnectivityListener(context, new ConnectivityManager.NetworkCallback() {
+
+        connectivityListenerCallback = new ConnectivityManager.NetworkCallback() {
             @Override
             public void onAvailable(@NonNull Network network) {
                 super.onAvailable(network);
@@ -114,12 +125,21 @@ public class MealDetailsPresenter implements MealDetailsContract.Presenter {
                 super.onLost(network);
                 view.onNetworkDisconnected();
             }
-        });
+        };
+
+        NetworkManager.addConnectivityListener(context, connectivityListenerCallback);
+    }
+
+    @Override
+    public void removeConnectivityListener(Context context) {
+        NetworkManager.removeConnectivityListener(context, connectivityListenerCallback);
+
     }
 
 
     @Override
     public void onDetach() {
+        removeConnectivityListener(context);
         compositeDisposable.dispose();
     }
 }

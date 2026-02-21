@@ -1,4 +1,4 @@
-package iti.mad.gusto.data.model;
+package iti.mad.gusto.domain.entity;
 
 public class BoardingItem {
     private int titleRes;

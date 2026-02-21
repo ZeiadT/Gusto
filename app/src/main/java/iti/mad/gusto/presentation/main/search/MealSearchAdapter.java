@@ -1,4 +1,5 @@
 package iti.mad.gusto.presentation.main.search;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,14 +15,19 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import iti.mad.gusto.R;
 import iti.mad.gusto.domain.entity.MealEntity;
+import iti.mad.gusto.presentation.common.util.WaveEffectManager;
 
 public class MealSearchAdapter extends RecyclerView.Adapter<MealSearchAdapter.MealSearchViewHolder> {
 
     private List<MealEntity> mealList;
+    private Set<String> favouriteIds = new HashSet<>();
+
     private final Context context;
     private final OnMealClickListener listener;
 
@@ -31,10 +37,19 @@ public class MealSearchAdapter extends RecyclerView.Adapter<MealSearchAdapter.Me
         this.mealList = new ArrayList<>();
     }
 
-    public void setList(List<MealEntity> newMeals) {
+    /** Sets meals and favourite IDs from DB (via presenter). Check Room every time; no cache. */
+    public void setList(List<MealEntity> newMeals, Set<String> favouriteIdsFromDb) {
         this.mealList = newMeals;
+        this.favouriteIds = favouriteIdsFromDb != null ? favouriteIdsFromDb : new HashSet<>();
         notifyDataSetChanged();
     }
+
+    /** Refreshes favourite state from DB (e.g. after fav click or returning from another screen). */
+    public void setFavouriteIds(Set<String> favouriteIdsFromDb) {
+        this.favouriteIds = favouriteIdsFromDb != null ? favouriteIdsFromDb : new HashSet<>();
+        notifyDataSetChanged();
+    }
+
     public List<MealEntity> getList() {
         return mealList;
     }
@@ -59,10 +74,11 @@ public class MealSearchAdapter extends RecyclerView.Adapter<MealSearchAdapter.Me
 
     public interface OnMealClickListener {
         void onMealClick(MealEntity meal);
-        void onFavoriteClick(MealEntity meal, boolean isFavorite);
+
+        void onFavoriteClick(MealEntity meal, boolean isFavorite, View buttonView);
     }
 
-    public static class MealSearchViewHolder extends RecyclerView.ViewHolder {
+    public class MealSearchViewHolder extends RecyclerView.ViewHolder {
         ImageView ivMealThumb;
         TextView tvMealName;
         CheckBox btnFavorite;
@@ -75,7 +91,7 @@ public class MealSearchAdapter extends RecyclerView.Adapter<MealSearchAdapter.Me
         }
 
 
-        public void bind(MealEntity meal, OnMealClickListener listener){
+        public void bind(MealEntity meal, OnMealClickListener listener) {
 
             tvMealName.setText(meal.getName());
 
@@ -93,12 +109,15 @@ public class MealSearchAdapter extends RecyclerView.Adapter<MealSearchAdapter.Me
             });
 
             btnFavorite.setOnCheckedChangeListener(null);
-
-            btnFavorite.setChecked(false);
-
+            boolean isFav = favouriteIds.contains(meal.getId());
+            btnFavorite.setChecked(isFav);
+            btnFavorite.setButtonDrawable(isFav ? R.drawable.bookmark_fill : R.drawable.bookmark);
             btnFavorite.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                if (listener != null) listener.onFavoriteClick(meal, isChecked);
+                if (listener != null) listener.onFavoriteClick(meal, isChecked, buttonView);
+                btnFavorite.setButtonDrawable(isChecked ? R.drawable.bookmark_fill : R.drawable.bookmark);
+
             });
+
         }
     }
 }

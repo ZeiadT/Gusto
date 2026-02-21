@@ -15,10 +15,7 @@ public abstract class NetworkManager {
 
             NetworkCapabilities actNw = connectivityManager.getNetworkCapabilities(network);
             if (actNw != null) {
-                return !actNw.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) ||
-                        (!actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) &&
-                                !actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) &&
-                                !actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET));
+                return !actNw.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
             }
         }
         return true;
@@ -30,6 +27,13 @@ public abstract class NetworkManager {
         if (connectivityManager != null) {
             connectivityManager.registerDefaultNetworkCallback(callback);
         }
+    }
 
+    public static void removeConnectivityListener(Context context, ConnectivityManager.NetworkCallback callback){
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if (connectivityManager != null) {
+            connectivityManager.unregisterNetworkCallback(callback);
+        }
     }
 }
