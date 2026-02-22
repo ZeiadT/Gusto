@@ -124,12 +124,6 @@ Gusto is powered by the free **[TheMealDB API](https://www.themealdb.com/api.php
 
 ---
 
-## 📸 Screenshots
-
-> *(Add screenshots here)*
-
----
-
 ## 🚀 Getting Started (Build from Source)
 
 ### Prerequisites
